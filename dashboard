@@ -1,0 +1,498 @@
+import { useState, useMemo } from “react”;
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, ZAxis, PieChart, Pie, Legend, CartesianGrid, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from “recharts”;
+
+const COLORS = {
+navy: “#1B3A4B”, teal: “#2E8B57”, slate: “#2E5266”, sky: “#3A7CA5”,
+coral: “#E07A5F”, gold: “#D4A017”, plum: “#8B5CF6”, rose: “#E11D48”,
+emerald: “#059669”, amber: “#D97706”, indigo: “#4F46E5”, cyan: “#0891B2”
+};
+
+const PAL = [”#1B3A4B”,”#2E8B57”,”#3A7CA5”,”#E07A5F”,”#D4A017”,”#8B5CF6”,”#E11D48”,”#059669”,”#D97706”,”#4F46E5”,”#0891B2”,”#2E5266”,”#64748B”];
+
+const segmentData = [
+{ name: “Boutique DEI”, count: 20, pct: 25, growth: “Stable”, avgPrice: “Mid” },
+{ name: “Nonprofit DEI”, count: 11, pct: 14, growth: “Stable”, avgPrice: “Low” },
+{ name: “Membership Network”, count: 8, pct: 10, growth: “Growing”, avgPrice: “Low-Mid” },
+{ name: “Training Provider”, count: 7, pct: 9, growth: “Moderate”, avgPrice: “Low-Mid” },
+{ name: “Big Four / Global”, count: 6, pct: 8, growth: “Growing”, avgPrice: “Premium” },
+{ name: “HR Consulting”, count: 6, pct: 8, growth: “Growing”, avgPrice: “Mid-Premium” },
+{ name: “Executive Search”, count: 5, pct: 6, growth: “Growing”, avgPrice: “Premium” },
+{ name: “DEI Tech Platform”, count: 4, pct: 5, growth: “Very High”, avgPrice: “Mid” },
+{ name: “Health/Wellness”, count: 3, pct: 4, growth: “Very High”, avgPrice: “Mid” },
+{ name: “Speaker-Led”, count: 3, pct: 4, growth: “Stable”, avgPrice: “Mid-Premium” },
+{ name: “Academic/Research”, count: 3, pct: 4, growth: “Stable”, avgPrice: “Low-Mid” },
+{ name: “Social Enterprise”, count: 2, pct: 3, growth: “Growing”, avgPrice: “Low” },
+];
+
+const saturationData = [
+{ service: “Unconscious Bias Training”, firms: 58, saturation: 95, growth: 15 },
+{ service: “Inclusive Leadership”, firms: 52, saturation: 85, growth: 25 },
+{ service: “DEI Strategy Consulting”, firms: 48, saturation: 78, growth: 45 },
+{ service: “Anti-Racism Training”, firms: 42, saturation: 70, growth: 40 },
+{ service: “Cultural Competency”, firms: 38, saturation: 65, growth: 45 },
+{ service: “Equity Audits”, firms: 32, saturation: 55, growth: 60 },
+{ service: “Inclusive Hiring”, firms: 30, saturation: 50, growth: 70 },
+{ service: “Indigenous Reconciliation”, firms: 28, saturation: 48, growth: 75 },
+{ service: “LGBTQ2S+ Inclusion”, firms: 22, saturation: 38, growth: 45 },
+{ service: “Pay Equity Analysis”, firms: 18, saturation: 30, growth: 90 },
+{ service: “ERG Strategy”, firms: 14, saturation: 22, growth: 85 },
+{ service: “DEI Measurement”, firms: 12, saturation: 18, growth: 95 },
+{ service: “Accessibility”, firms: 16, saturation: 25, growth: 88 },
+{ service: “Board Diversity”, firms: 12, saturation: 18, growth: 72 },
+{ service: “DEI Tech / SaaS”, firms: 8, saturation: 12, growth: 95 },
+{ service: “Mental Health Equity”, firms: 8, saturation: 12, growth: 92 },
+{ service: “Health Equity”, firms: 6, saturation: 8, growth: 95 },
+{ service: “Inclusive Product Design”, firms: 6, saturation: 8, growth: 90 },
+{ service: “Neurodiversity”, firms: 5, saturation: 6, growth: 95 },
+{ service: “AI Ethics”, firms: 4, saturation: 5, growth: 98 },
+{ service: “Behavioral Science”, firms: 3, saturation: 4, growth: 92 },
+];
+
+const positioningData = [
+{ name: “Deloitte”, spec: 3, price: 5, size: 600, cat: “Big Four” },
+{ name: “KPMG”, spec: 4, price: 5, size: 600, cat: “Big Four” },
+{ name: “PwC”, spec: 3, price: 5, size: 600, cat: “Big Four” },
+{ name: “EY”, spec: 5, price: 5, size: 600, cat: “Big Four” },
+{ name: “McKinsey”, spec: 4, price: 5, size: 500, cat: “Big Four” },
+{ name: “Accenture”, spec: 5, price: 5, size: 550, cat: “Big Four” },
+{ name: “Diversio”, spec: 9, price: 3.5, size: 350, cat: “DEI Tech” },
+{ name: “Mathison”, spec: 9, price: 3, size: 300, cat: “DEI Tech” },
+{ name: “CultureAlly”, spec: 7, price: 1.5, size: 150, cat: “DEI Tech” },
+{ name: “Tidal Equality”, spec: 10, price: 3.5, size: 200, cat: “Boutique” },
+{ name: “Feminuity”, spec: 9, price: 3, size: 200, cat: “Boutique” },
+{ name: “Anima Leadership”, spec: 9, price: 3, size: 200, cat: “Boutique” },
+{ name: “ICT Inc”, spec: 10, price: 2, size: 250, cat: “Training” },
+{ name: “CCDI”, spec: 6, price: 2, size: 350, cat: “Nonprofit” },
+{ name: “Catalyst”, spec: 8, price: 3, size: 350, cat: “Nonprofit” },
+{ name: “BPTN”, spec: 10, price: 3, size: 350, cat: “Membership” },
+{ name: “Mercer”, spec: 7, price: 5, size: 500, cat: “HR Consulting” },
+{ name: “Korn Ferry”, spec: 6, price: 5, size: 450, cat: “Exec Search” },
+{ name: “Shift Health”, spec: 10, price: 3.5, size: 200, cat: “Boutique” },
+{ name: “Dialogue”, spec: 8, price: 3, size: 300, cat: “Health Tech” },
+{ name: “Humphrey Group”, spec: 8, price: 3.5, size: 250, cat: “Training” },
+{ name: “Pride at Work”, spec: 10, price: 2, size: 200, cat: “Nonprofit” },
+];
+
+const pricingData = [
+{ service: “Half-Day Workshop”, low: 2000, mid: 6000, premium: 15000 },
+{ service: “Full-Day Workshop”, low: 3500, mid: 10000, premium: 25000 },
+{ service: “DEI Strategy (3-6 mo)”, low: 25000, mid: 100000, premium: 500000 },
+{ service: “Equity Audit”, low: 15000, mid: 50000, premium: 150000 },
+{ service: “Keynote Speaking”, low: 3000, mid: 10000, premium: 30000 },
+{ service: “Exec Coaching (6 mo)”, low: 10000, mid: 30000, premium: 75000 },
+{ service: “Board Search”, low: 50000, mid: 100000, premium: 200000 },
+{ service: “Pay Equity Analysis”, low: 20000, mid: 80000, premium: 300000 },
+];
+
+const marketSizing = [
+{ segment: “Consulting & Advisory”, value: 650 },
+{ segment: “Training & Workshops”, value: 400 },
+{ segment: “Executive Search”, value: 275 },
+{ segment: “Internal Budgets”, value: 400 },
+{ segment: “Nonprofit Programs”, value: 275 },
+{ segment: “DEI Technology”, value: 100 },
+];
+
+const gapRadar = [
+{ gap: “DEI Analytics”, opportunity: 95, supply: 15, demand: 90 },
+{ gap: “Industry-Specific”, opportunity: 88, supply: 8, demand: 75 },
+{ gap: “SME Solutions”, opportunity: 85, supply: 12, demand: 80 },
+{ gap: “Neurodiversity”, opportunity: 92, supply: 6, demand: 70 },
+{ gap: “AI Ethics”, opportunity: 90, supply: 5, demand: 65 },
+{ gap: “Health Equity”, opportunity: 88, supply: 8, demand: 72 },
+];
+
+const TABS = [“Overview”, “Segmentation”, “Saturation”, “Positioning”, “Pricing”, “Gaps”];
+
+const CustomTooltip = ({ active, payload, label }) => {
+if (!active || !payload?.length) return null;
+return (
+<div style={{ background: “#1a1a2e”, border: “1px solid #333”, borderRadius: 8, padding: “10px 14px”, color: “#e0e0e0”, fontSize: 12, boxShadow: “0 4px 20px rgba(0,0,0,0.4)” }}>
+<p style={{ fontWeight: 700, marginBottom: 4, color: “#fff” }}>{label || payload[0]?.payload?.name || payload[0]?.payload?.service}</p>
+{payload.map((p, i) => (
+<p key={i} style={{ margin: “2px 0”, color: p.color || “#ccc” }}>
+{p.name}: {typeof p.value === “number” && p.value > 999 ? `$${(p.value/1000).toFixed(0)}K` : p.value}
+</p>
+))}
+</div>
+);
+};
+
+export default function Dashboard() {
+const [tab, setTab] = useState(“Overview”);
+const [satSort, setSatSort] = useState(“firms”);
+const [posFilter, setPosFilter] = useState(“All”);
+
+const sortedSat = useMemo(() => {
+const d = […saturationData];
+if (satSort === “firms”) d.sort((a, b) => b.firms - a.firms);
+else if (satSort === “growth”) d.sort((a, b) => b.growth - a.growth);
+else d.sort((a, b) => b.saturation - a.saturation);
+return d;
+}, [satSort]);
+
+const filteredPos = useMemo(() => {
+if (posFilter === “All”) return positioningData;
+return positioningData.filter(d => d.cat === posFilter);
+}, [posFilter]);
+
+const posCats = […new Set(positioningData.map(d => d.cat))];
+const catColors = { “Big Four”: COLORS.navy, “DEI Tech”: COLORS.emerald, “Boutique”: COLORS.coral, “Training”: COLORS.gold, “Nonprofit”: COLORS.sky, “Membership”: COLORS.plum, “HR Consulting”: COLORS.slate, “Exec Search”: COLORS.indigo, “Health Tech”: COLORS.cyan };
+
+return (
+<div style={{ minHeight: “100vh”, background: “linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%)”, color: “#e0e0e0”, fontFamily: “‘DM Sans’, ‘Segoe UI’, sans-serif” }}>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+```
+  {/* Header */}
+  <div style={{ padding: "32px 40px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+    <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 4 }}>
+      <h1 style={{ fontSize: 28, fontWeight: 700, color: "#fff", margin: 0, letterSpacing: "-0.5px" }}>
+        Canadian DEI Market Intelligence
+      </h1>
+      <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#2E8B57", background: "rgba(46,139,87,0.15)", padding: "3px 10px", borderRadius: 4, border: "1px solid rgba(46,139,87,0.3)" }}>
+        LIVE RESEARCH
+      </span>
+    </div>
+    <p style={{ fontSize: 13, color: "#888", margin: "8px 0 0", fontFamily: "'Space Mono', monospace" }}>
+      80 organizations · 13 segments · 24 service categories · March 2026
+    </p>
+  </div>
+
+  {/* Tabs */}
+  <div style={{ display: "flex", gap: 2, padding: "0 40px", background: "rgba(0,0,0,0.2)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+    {TABS.map(t => (
+      <button key={t} onClick={() => setTab(t)} style={{
+        padding: "12px 20px", fontSize: 13, fontWeight: tab === t ? 700 : 400, cursor: "pointer",
+        background: tab === t ? "rgba(46,139,87,0.15)" : "transparent",
+        color: tab === t ? "#2E8B57" : "#888",
+        border: "none", borderBottom: tab === t ? "2px solid #2E8B57" : "2px solid transparent",
+        fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s"
+      }}>{t}</button>
+    ))}
+  </div>
+
+  {/* Content */}
+  <div style={{ padding: "28px 40px" }}>
+
+    {/* OVERVIEW */}
+    {tab === "Overview" && (
+      <div>
+        {/* KPI Cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
+          {[
+            { label: "Total Organizations", value: "80", sub: "Across 13 segments", accent: COLORS.teal },
+            { label: "Market Size (Est.)", value: "$2B", sub: "$1.5B - $2.5B range", accent: COLORS.sky },
+            { label: "Growth Rate", value: "8-12%", sub: "CAGR projected", accent: COLORS.gold },
+            { label: "Strategic Gaps", value: "5", sub: "Major opportunities", accent: COLORS.coral },
+          ].map((kpi, i) => (
+            <div key={i} style={{
+              background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: "24px 20px",
+              border: "1px solid rgba(255,255,255,0.06)", position: "relative", overflow: "hidden"
+            }}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: 3, height: "100%", background: kpi.accent }} />
+              <p style={{ fontSize: 11, color: "#888", margin: 0, textTransform: "uppercase", letterSpacing: 1, fontFamily: "'Space Mono', monospace" }}>{kpi.label}</p>
+              <p style={{ fontSize: 32, fontWeight: 700, color: "#fff", margin: "8px 0 4px" }}>{kpi.value}</p>
+              <p style={{ fontSize: 12, color: "#666", margin: 0 }}>{kpi.sub}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Market Sizing Chart + Key Findings */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: "#fff", margin: "0 0 20px", fontFamily: "'Space Mono', monospace" }}>MARKET SIZE BY SEGMENT ($M)</h3>
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={marketSizing} layout="vertical" margin={{ left: 10, right: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis type="number" tick={{ fill: "#666", fontSize: 11 }} />
+                <YAxis type="category" dataKey="segment" tick={{ fill: "#aaa", fontSize: 11 }} width={120} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} name="Value ($M)">
+                  {marketSizing.map((_, i) => <Cell key={i} fill={PAL[i % PAL.length]} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: "#fff", margin: "0 0 16px", fontFamily: "'Space Mono', monospace" }}>KEY STRATEGIC FINDINGS</h3>
+            {[
+              { icon: "📊", title: "Measurement Gap", desc: "Only 15% of firms offer DEI analytics — the #1 unmet need" },
+              { icon: "⚡", title: "Tech Disruption", desc: "SaaS platforms threatening traditional consulting economics" },
+              { icon: "🎯", title: "Commoditization", desc: "73% of firms offer unconscious bias training — severely oversaturated" },
+              { icon: "🧠", title: "Neurodiversity", desc: "Only 5 providers in a rapidly growing, largely untapped market" },
+              { icon: "🏥", title: "Health Equity", desc: "6 providers for a category with very high growth potential" },
+              { icon: "🤖", title: "AI Ethics", desc: "4 providers at the regulatory frontier — massive first-mover advantage" },
+            ].map((f, i) => (
+              <div key={i} style={{ display: "flex", gap: 12, marginBottom: 14, alignItems: "flex-start" }}>
+                <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{f.icon}</span>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: "#ddd", margin: 0 }}>{f.title}</p>
+                  <p style={{ fontSize: 12, color: "#888", margin: "2px 0 0" }}>{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* SEGMENTATION */}
+    {tab === "Segmentation" && (
+      <div>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", margin: "0 0 20px" }}>Market Segmentation Analysis</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24 }}>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#aaa", margin: "0 0 16px", fontFamily: "'Space Mono', monospace" }}>FIRMS BY SEGMENT</h3>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={segmentData} layout="vertical" margin={{ left: 10, right: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis type="number" tick={{ fill: "#666", fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" tick={{ fill: "#aaa", fontSize: 11 }} width={140} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="count" radius={[0, 6, 6, 0]} name="# Firms">
+                  {segmentData.map((_, i) => <Cell key={i} fill={PAL[i % PAL.length]} />)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#aaa", margin: "0 0 16px", fontFamily: "'Space Mono', monospace" }}>MARKET SHARE</h3>
+            <ResponsiveContainer width="100%" height={400}>
+              <PieChart>
+                <Pie data={segmentData} dataKey="pct" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={110} paddingAngle={2} stroke="none">
+                  {segmentData.map((_, i) => <Cell key={i} fill={PAL[i % PAL.length]} />)}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        {/* Segment detail table */}
+        <div style={{ marginTop: 24, background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)", overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr>{["Segment", "Firms", "Share", "Avg Price", "Growth Outlook"].map(h => (
+                <th key={h} style={{ padding: "10px 14px", textAlign: "left", borderBottom: "1px solid rgba(255,255,255,0.1)", color: "#aaa", fontFamily: "'Space Mono', monospace", fontSize: 11 }}>{h}</th>
+              ))}</tr>
+            </thead>
+            <tbody>
+              {segmentData.map((s, i) => (
+                <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                  <td style={{ padding: "10px 14px", color: "#ddd", fontWeight: 600 }}>{s.name}</td>
+                  <td style={{ padding: "10px 14px", color: "#fff", fontWeight: 700 }}>{s.count}</td>
+                  <td style={{ padding: "10px 14px", color: "#aaa" }}>{s.pct}%</td>
+                  <td style={{ padding: "10px 14px" }}>
+                    <span style={{ background: s.avgPrice === "Premium" ? "rgba(224,122,95,0.2)" : s.avgPrice === "Mid" ? "rgba(58,124,165,0.2)" : "rgba(46,139,87,0.2)", color: s.avgPrice === "Premium" ? "#E07A5F" : s.avgPrice === "Mid" ? "#3A7CA5" : "#2E8B57", padding: "2px 8px", borderRadius: 4, fontSize: 11 }}>{s.avgPrice}</span>
+                  </td>
+                  <td style={{ padding: "10px 14px" }}>
+                    <span style={{ color: s.growth === "Very High" ? "#2E8B57" : s.growth === "Growing" ? "#3A7CA5" : "#888" }}>{s.growth}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    {/* SATURATION */}
+    {tab === "Saturation" && (
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", margin: 0 }}>Service Saturation Heatmap</h2>
+          <div style={{ display: "flex", gap: 8 }}>
+            {["firms", "growth", "saturation"].map(s => (
+              <button key={s} onClick={() => setSatSort(s)} style={{
+                padding: "6px 14px", fontSize: 11, cursor: "pointer", borderRadius: 6,
+                background: satSort === s ? "rgba(46,139,87,0.2)" : "rgba(255,255,255,0.05)",
+                color: satSort === s ? "#2E8B57" : "#888", border: satSort === s ? "1px solid rgba(46,139,87,0.3)" : "1px solid rgba(255,255,255,0.1)",
+                fontFamily: "'Space Mono', monospace", textTransform: "uppercase"
+              }}>Sort: {s}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+          {sortedSat.map((s, i) => {
+            const satColor = s.saturation > 70 ? "#E11D48" : s.saturation > 40 ? "#D97706" : s.saturation > 20 ? "#3A7CA5" : "#2E8B57";
+            const growthColor = s.growth > 85 ? "#2E8B57" : s.growth > 60 ? "#3A7CA5" : s.growth > 40 ? "#D97706" : "#888";
+            return (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "200px 1fr 80px 80px", gap: 16, alignItems: "center", padding: "8px 0", borderBottom: i < sortedSat.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
+                <span style={{ fontSize: 12, color: "#ddd", fontWeight: 500 }}>{s.service}</span>
+                <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                  <div style={{ flex: 1, background: "rgba(255,255,255,0.05)", borderRadius: 4, height: 20, overflow: "hidden", position: "relative" }}>
+                    <div style={{ width: `${s.saturation}%`, height: "100%", background: `linear-gradient(90deg, ${satColor}88, ${satColor})`, borderRadius: 4, transition: "width 0.5s ease" }} />
+                  </div>
+                  <div style={{ flex: 1, background: "rgba(255,255,255,0.05)", borderRadius: 4, height: 20, overflow: "hidden" }}>
+                    <div style={{ width: `${s.growth}%`, height: "100%", background: `linear-gradient(90deg, ${growthColor}88, ${growthColor})`, borderRadius: 4, transition: "width 0.5s ease" }} />
+                  </div>
+                </div>
+                <span style={{ fontSize: 11, color: satColor, fontFamily: "'Space Mono', monospace", textAlign: "right" }}>{s.saturation}% sat</span>
+                <span style={{ fontSize: 11, color: growthColor, fontFamily: "'Space Mono', monospace", textAlign: "right" }}>{s.growth}% grw</span>
+              </div>
+            );
+          })}
+          <div style={{ display: "flex", gap: 20, marginTop: 16, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+            {[{ color: "#E11D48", label: "High Saturation" }, { color: "#D97706", label: "Moderate" }, { color: "#3A7CA5", label: "Low" }, { color: "#2E8B57", label: "Very Low / High Growth" }].map(l => (
+              <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: l.color }} />
+                <span style={{ fontSize: 10, color: "#888" }}>{l.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* POSITIONING */}
+    {tab === "Positioning" && (
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", margin: 0 }}>Competitive Positioning Matrix</h2>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button onClick={() => setPosFilter("All")} style={{ padding: "5px 12px", fontSize: 11, cursor: "pointer", borderRadius: 6, background: posFilter === "All" ? "rgba(46,139,87,0.2)" : "rgba(255,255,255,0.05)", color: posFilter === "All" ? "#2E8B57" : "#888", border: posFilter === "All" ? "1px solid rgba(46,139,87,0.3)" : "1px solid rgba(255,255,255,0.1)", fontFamily: "'Space Mono', monospace" }}>All</button>
+            {posCats.map(c => (
+              <button key={c} onClick={() => setPosFilter(c)} style={{ padding: "5px 12px", fontSize: 11, cursor: "pointer", borderRadius: 6, background: posFilter === c ? "rgba(46,139,87,0.2)" : "rgba(255,255,255,0.05)", color: posFilter === c ? "#2E8B57" : "#888", border: posFilter === c ? "1px solid rgba(46,139,87,0.3)" : "1px solid rgba(255,255,255,0.1)", fontFamily: "'Space Mono', monospace" }}>{c}</button>
+            ))}
+          </div>
+        </div>
+        <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)", position: "relative" }}>
+          {/* Axis labels */}
+          <div style={{ position: "absolute", top: 24, left: "50%", transform: "translateX(-50%)", fontSize: 11, color: "#666", fontFamily: "'Space Mono', monospace" }}>SPECIALIZATION →</div>
+          <div style={{ position: "absolute", left: 8, top: "50%", transform: "rotate(-90deg) translateX(-50%)", transformOrigin: "left center", fontSize: 11, color: "#666", fontFamily: "'Space Mono', monospace" }}>PRICING TIER →</div>
+          {/* Quadrant labels */}
+          <div style={{ position: "absolute", top: 48, left: 60, fontSize: 10, color: "#444", fontFamily: "'Space Mono', monospace" }}>GENERALIST LEADERS</div>
+          <div style={{ position: "absolute", top: 48, right: 30, fontSize: 10, color: "#444", fontFamily: "'Space Mono', monospace" }}>SPECIALIST LEADERS</div>
+          <div style={{ position: "absolute", bottom: 40, left: 60, fontSize: 10, color: "#444", fontFamily: "'Space Mono', monospace" }}>EMERGING CHALLENGERS</div>
+          <div style={{ position: "absolute", bottom: 40, right: 30, fontSize: 10, color: "#444", fontFamily: "'Space Mono', monospace" }}>NICHE SPECIALISTS</div>
+          <ResponsiveContainer width="100%" height={420}>
+            <ScatterChart margin={{ top: 40, right: 30, bottom: 30, left: 30 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis type="number" dataKey="spec" domain={[0, 11]} tick={{ fill: "#666", fontSize: 10 }} name="Specialization" />
+              <YAxis type="number" dataKey="price" domain={[0, 6]} tick={{ fill: "#666", fontSize: 10 }} name="Price Tier" />
+              <ZAxis type="number" dataKey="size" range={[60, 400]} />
+              <Tooltip content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const d = payload[0].payload;
+                return (
+                  <div style={{ background: "#1a1a2e", border: "1px solid #333", borderRadius: 8, padding: "10px 14px", color: "#e0e0e0", fontSize: 12, boxShadow: "0 4px 20px rgba(0,0,0,0.4)" }}>
+                    <p style={{ fontWeight: 700, color: "#fff", margin: "0 0 4px" }}>{d.name}</p>
+                    <p style={{ margin: "2px 0", color: catColors[d.cat] || "#ccc" }}>{d.cat}</p>
+                    <p style={{ margin: "2px 0", color: "#aaa" }}>Specialization: {d.spec}/10</p>
+                    <p style={{ margin: "2px 0", color: "#aaa" }}>Price: {["","Budget","Low","Mid","Mid-Prem","Premium"][Math.round(d.price)]}</p>
+                  </div>
+                );
+              }} />
+              <Scatter data={filteredPos}>
+                {filteredPos.map((d, i) => <Cell key={i} fill={catColors[d.cat] || "#888"} fillOpacity={0.85} />)}
+              </Scatter>
+              {/* Quadrant dividers */}
+              <CartesianGrid strokeDasharray="8 4" stroke="rgba(255,255,255,0.08)" />
+            </ScatterChart>
+          </ResponsiveContainer>
+          {/* Legend */}
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 12, flexWrap: "wrap" }}>
+            {Object.entries(catColors).map(([cat, color]) => (
+              <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: color }} />
+                <span style={{ fontSize: 11, color: "#888" }}>{cat}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* PRICING */}
+    {tab === "Pricing" && (
+      <div>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", margin: "0 0 20px" }}>Pricing Benchmark Analysis</h2>
+        <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+          <ResponsiveContainer width="100%" height={380}>
+            <BarChart data={pricingData} margin={{ left: 10, right: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis dataKey="service" tick={{ fill: "#aaa", fontSize: 10 }} angle={-20} textAnchor="end" height={60} />
+              <YAxis tick={{ fill: "#666", fontSize: 10 }} tickFormatter={v => v >= 1000 ? `$${v/1000}K` : `$${v}`} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#aaa" }} />
+              <Bar dataKey="low" name="Low Cost" fill={COLORS.teal} radius={[2, 2, 0, 0]} />
+              <Bar dataKey="mid" name="Mid Market" fill={COLORS.sky} radius={[2, 2, 0, 0]} />
+              <Bar dataKey="premium" name="Premium" fill={COLORS.coral} radius={[2, 2, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        {/* Price tier summary */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginTop: 20 }}>
+          {[
+            { tier: "Subsidized", range: "<$2K/day", color: "#2E8B57" },
+            { tier: "Low Cost", range: "$2-4K/day", color: "#3A7CA5" },
+            { tier: "Mid Market", range: "$4-8K/day", color: "#D4A017" },
+            { tier: "Mid-Premium", range: "$8-15K/day", color: "#E07A5F" },
+            { tier: "Premium", range: "$15-40K+/day", color: "#E11D48" },
+          ].map((t, i) => (
+            <div key={i} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 10, padding: "16px 14px", border: "1px solid rgba(255,255,255,0.06)", borderLeft: `3px solid ${t.color}` }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: "#fff", margin: 0 }}>{t.tier}</p>
+              <p style={{ fontSize: 18, fontWeight: 700, color: t.color, margin: "6px 0 0", fontFamily: "'Space Mono', monospace" }}>{t.range}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* GAPS */}
+    {tab === "Gaps" && (
+      <div>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", margin: "0 0 20px" }}>Strategic Gap Analysis</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#aaa", margin: "0 0 16px", fontFamily: "'Space Mono', monospace" }}>OPPORTUNITY vs SUPPLY RADAR</h3>
+            <ResponsiveContainer width="100%" height={340}>
+              <RadarChart data={gapRadar}>
+                <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                <PolarAngleAxis dataKey="gap" tick={{ fill: "#aaa", fontSize: 11 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: "#666", fontSize: 9 }} />
+                <Radar name="Opportunity" dataKey="opportunity" stroke={COLORS.teal} fill={COLORS.teal} fillOpacity={0.3} />
+                <Radar name="Current Supply" dataKey="supply" stroke={COLORS.coral} fill={COLORS.coral} fillOpacity={0.3} />
+                <Radar name="Demand" dataKey="demand" stroke={COLORS.sky} fill={COLORS.sky} fillOpacity={0.2} />
+                <Legend wrapperStyle={{ fontSize: 11, color: "#aaa" }} />
+                <Tooltip content={<CustomTooltip />} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.06)" }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: "#aaa", margin: "0 0 16px", fontFamily: "'Space Mono', monospace" }}>TOP 5 STRATEGIC GAPS</h3>
+            {[
+              { gap: "DEI Analytics & Measurement", score: 95, desc: "15% provider coverage vs. 90% demand — the #1 unmet need", color: COLORS.teal },
+              { gap: "Neurodiversity Programs", score: 92, desc: "5 providers in Canada for a market growing 25%+ annually", color: COLORS.emerald },
+              { gap: "AI Ethics & Inclusive AI", score: 90, desc: "4 providers at the regulatory frontier — first-mover advantage", color: COLORS.sky },
+              { gap: "Industry-Specific DEI", score: 88, desc: "Healthcare, trades, energy each have <6 dedicated providers", color: COLORS.gold },
+              { gap: "Scalable SME Solutions", score: 85, desc: "98% of Canadian businesses underserved by current ecosystem", color: COLORS.coral },
+            ].map((g, i) => (
+              <div key={i} style={{ marginBottom: 18 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#ddd" }}>{g.gap}</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: g.color, fontFamily: "'Space Mono', monospace" }}>{g.score}</span>
+                </div>
+                <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 4, height: 6, marginBottom: 4 }}>
+                  <div style={{ width: `${g.score}%`, height: "100%", background: `linear-gradient(90deg, ${g.color}88, ${g.color})`, borderRadius: 4 }} />
+                </div>
+                <p style={{ fontSize: 11, color: "#888", margin: 0 }}>{g.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Footer */}
+  <div style={{ padding: "20px 40px", borderTop: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
+    <p style={{ fontSize: 10, color: "#555", fontFamily: "'Space Mono', monospace" }}>
+      Canadian DEI Market Intelligence · 80 Organizations · 13 Segments · March 2026 · Confidential Research
+    </p>
+  </div>
+</div>
+```
+
+);
+}
