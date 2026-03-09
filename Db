@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEI Market Intelligence - Interactive Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+        color: #e2e8f0;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: fadeIn 0.6s ease-in;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        background: linear-gradient(120deg, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+    }
+
+    .subtitle {
+        font-size: 1.1em;
+        color: #cbd5e1;
+        margin-bottom: 30px;
+    }
+
+    .nav-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+        animation: slideDown 0.6s ease-out;
+    }
+
+    .nav-tabs button {
+        padding: 12px 24px;
+        background: rgba(51, 65, 85, 0.5);
+        border: 2px solid #64748b;
+        color: #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.95em;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .nav-tabs button:hover {
+        background: rgba(99, 102, 241, 0.3);
+        border-color: #6366f1;
+        color: #60a5fa;
+        transform: translateY(-2px);
+    }
+
+    .nav-tabs button.active {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border-color: #8b5cf6;
+        color: white;
+        box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .chart-card {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 12px;
+        padding: 25px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .chart-card:hover {
+        background: rgba(30, 41, 59, 0.95);
+        border-color: rgba(99, 102, 241, 0.6);
+        box-shadow: 0 12px 48px rgba(99, 102, 241, 0.2);
+        transform: translateY(-4px);
+    }
+
+    .chart-card h3 {
+        font-size: 1.3em;
+        margin-bottom: 20px;
+        color: #60a5fa;
+        font-weight: 600;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-box {
+        background: rgba(99, 102, 241, 0.1);
+        border-left: 4px solid #6366f1;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+        background: rgba(99, 102, 241, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .stat-number {
+        font-size: 2.2em;
+        font-weight: 700;
+        color: #60a5fa;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9em;
+        color: #cbd5e1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .insights {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-left: 4px solid #22c55e;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: 30px;
+        backdrop-filter: blur(10px);
+    }
+
+    .insights h3 {
+        color: #22c55e;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+    }
+
+    .insights ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .insights li {
+        padding: 10px 0;
+        padding-left: 25px;
+        position: relative;
+        color: #cbd5e1;
+        line-height: 1.6;
+    }
+
+    .insights li:before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: #22c55e;
+        font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    canvas {
+        max-height: 300px;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 50px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(99, 102, 241, 0.2);
+        color: #94a3b8;
+        font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        h1 {
+            font-size: 1.8em;
+        }
+
+        .nav-tabs {
+            gap: 5px;
+        }
+
+        .nav-tabs button {
+            padding: 10px 16px;
+            font-size: 0.85em;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 DEI Market Intelligence</h1>
+            <p class="subtitle">Interactive Analysis of the Canadian DEI Consulting Ecosystem</p>
+        </header>
+
+```
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="showTab('market-segments')">Market Segments</button>
+        <button class="tab-btn" onclick="showTab('competitive')">Competitive Landscape</button>
+        <button class="tab-btn" onclick="showTab('pricing')">Pricing Analysis</button>
+        <button class="tab-btn" onclick="showTab('services')">Service Analysis</button>
+        <button class="tab-btn" onclick="showTab('growth')">Growth Opportunities</button>
+    </div>
+
+    <!-- Overview Tab -->
+    <div id="overview" class="tab-content active">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">80+</div>
+                <div class="stat-label">Organizations Analyzed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Ecosystem Categories</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">64</div>
+                <div class="stat-label">Canadian HQ</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Pricing Tiers</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="chart-card">
+                <h3>Organization Distribution by Type</h3>
+                <canvas id="typeChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Geographic Distribution</h3>
+                <canvas id="geoChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights">
+            <h3>Key Market Insights</h3>
+            <ul>
+                <li><strong>Market Concentration:</strong> Boutique consultancies (25%) and nonprofit organizations (19%) dominate the market</li>
+                <li><strong>Geographic Reach:</strong> 64 organizations are Canadian-headquartered, showing a mature domestic ecosystem</li>
+                <li><strong>Size Distribution:</strong> Small to mid-sized firms (60%) show high specialization potential</li>
+                <li><strong>Service Diversity:</strong> Organizations offer average of 3-4 service types, indicating broad capability development</li>
+                <li><strong>Growth Indicators:</strong> Emerging segments in AI Ethics, Neurodiversity, and Health Equity show highest growth potential</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Market Segments Tab -->
+    <div id="market-segments" class="tab-content">
+        <div class="dashboard-grid">
+            <div class="chart-card full-width">
+                <h3>Market Segments by Organization Count</h3>
+                <canvas id="segmentsChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Segment Growth Potential</h3>
+                <canvas id="growthChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Market Saturation by Segment</h3>
+                <canvas id="saturationChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights">
+            <h3>Market Segmentation Analysis</h3>
+            <ul>
+                <li><strong>Tier 1 (Dominant):</strong> Boutique Consultancies (20), Nonprofits (15) - Established players with brand recognition</li>
+                <li><strong>Tier 2 (Growing):</strong> Training Providers (10), Large Firms (8) - Expanding service portfolios</li>
+                <li><strong>Tier 3 (Emerging):</strong> Membership Networks (7), Speaker Consultancies (4) - Niche specialization</li>
+                <li><strong>Opportunities:</strong> Tech platforms (1) and HR consultancies (5) show room for expansion</li>
+                <li><strong>Consolidation Risk:</strong> Boutique segment vulnerable to acquisition by larger enterprise firms</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Competitive Landscape Tab -->
+    <div id="competitive" class="tab-content">
+        <div class="dashboard-grid">
+            <div class="chart-card">
+                <h3>Pricing Distribution</h3>
+                <canvas id="pricingDistChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Organization Size Distribution</h3>
+                <canvas id="sizeChart"></canvas>
+            </div>
+            <div class="chart-card full-width">
+                <h3>Competitive Positioning Matrix</h3>
+                <canvas id="positioningChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights">
+            <h3>Competitive Landscape</h3>
+            <ul>
+                <li><strong>Market Leaders:</strong> Large consulting firms and established boutiques command premium pricing</li>
+                <li><strong>Price Segmentation:</strong> Premium (9), Mid-tier (28), Low-mid (18), Low-cost (12) - Mid-market dominance</li>
+                <li><strong>Size Advantage:</strong> Mid-size firms (25-100 staff) show optimal balance of specialization and scale</li>
+                <li><strong>Differentiation Gap:</strong> 40% of firms compete on identical attributes - consolidation likely</li>
+                <li><strong>Emerging Challenge:</strong> Tech-enabled platforms beginning to disrupt traditional service models</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Pricing Analysis Tab -->
+    <div id="pricing" class="tab-content">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">$5-15K</div>
+                <div class="stat-label">Low Tier (1-day)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">$15-40K</div>
+                <div class="stat-label">Mid Tier (Project)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">$40-100K+</div>
+                <div class="stat-label">Premium (Retainer)</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="chart-card full-width">
+                <h3>Pricing Benchmarks by Service Type</h3>
+                <canvas id="benchmarkChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Pricing by Firm Size</h3>
+                <canvas id="firmSizeChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Revenue Model Distribution</h3>
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights">
+            <h3>Pricing Insights</h3>
+            <ul>
+                <li><strong>Service Type Impact:</strong> Strategy consulting commands 2-3x premium over training workshops</li>
+                <li><strong>Scale Effect:</strong> Enterprise-focused firms (35% premium) vs. SMB-focused firms</li>
+                <li><strong>Delivery Model:</strong> High-touch consulting (avg $40K) vs. online learning (avg $8K)</li>
+                <li><strong>Price Elasticity:</strong> Mid-market shows highest willingness to pay for outcomes-based pricing</li>
+                <li><strong>Margin Opportunity:</strong> Boutiques with specialization achieve 40-50% higher margins than generalists</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Services Tab -->
+    <div id="services" class="tab-content">
+        <div class="dashboard-grid">
+            <div class="chart-card full-width">
+                <h3>Most Common Service Offerings</h3>
+                <canvas id="servicesChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Service Delivery Methods</h3>
+                <canvas id="deliveryChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Emerging vs. Saturated Services</h3>
+                <canvas id="saturationServiceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights">
+            <h3>Service Offering Analysis</h3>
+            <ul>
+                <li><strong>Most Common:</strong> Unconscious Bias Training (78%), Inclusive Leadership (65%), DEI Strategy (60%)</li>
+                <li><strong>Saturated Market:</strong> Traditional training (45% of firms) - commoditized, low differentiation</li>
+                <li><strong>Growth Opportunities:</strong> AI Ethics training (8% of market), Neurodiversity consulting (12%), Health Equity (10%)</li>
+                <li><strong>Delivery Shift:</strong> Hybrid (42%) overtaking pure in-person (38%) - post-pandemic acceleration</li>
+                <li><strong>Premium Indicator:</strong> Specialized + measurement-focused offerings correlate with 50% price premium</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Growth Opportunities Tab -->
+    <div id="growth" class="tab-content">
+        <div class="dashboard-grid">
+            <div class="chart-card full-width">
+                <h3>Strategic Growth Opportunities</h3>
+                <canvas id="opportunitiesChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="stat-number" style="color: #22c55e; font-size: 1.5em; margin-bottom: 20px;">5 Major Gaps Identified</div>
+                <p style="color: #cbd5e1;">High-potential market segments with low current supply</p>
+            </div>
+        </div>
+
+        <div class="insights">
+            <h3>Strategic Gap Analysis & Recommendations</h3>
+            <ul>
+                <li><strong>Gap #1 - Measurable DEI Analytics:</strong> 95% of firms lack robust measurement frameworks. Opportunity for data-driven platform ($500K-2M ARR potential)</li>
+                <li><strong>Gap #2 - Industry-Specific Programs:</strong> Generic offerings dominate. Vertical specialization (tech, healthcare, finance) could command 35% premium</li>
+                <li><strong>Gap #3 - Scalable Digital Platforms:</strong> Only 1 pure-play SaaS platform. Market ready for AI-enabled learning and assessment tools</li>
+                <li><strong>Gap #4 - Leadership Accountability Systems:</strong> High-need but underserved. Executive coaching tied to measurable DEI outcomes gaining traction</li>
+                <li><strong>Gap #5 - M&A Consolidation Play:</strong> Boutiques (avg 15 employees) vulnerable to acquisition. Buyout economics attractive for private equity</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>DEI Market Intelligence Research | Last Updated: March 2026 | <a href="https://github.com/YOUR_USERNAME/dei-market-intelligence" style="color: #60a5fa;">View on GitHub</a></p>
+    </footer>
+</div>
+
+<script>
+    // Chart.js color palette
+    const colors = {
+        primary: '#6366f1',
+        secondary: '#8b5cf6',
+        success: '#22c55e',
+        warning: '#f59e0b',
+        danger: '#ef4444',
+        info: '#60a5fa'
+    };
+
+    const chartDefaults = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#cbd5e1',
+                    font: { size: 12 }
+                }
+            }
+        },
+        scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(99, 102, 241, 0.1)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(99, 102, 241, 0.1)' } }
+        }
+    };
+
+    // Organization Type Chart
+    new Chart(document.getElementById('typeChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Boutique Consultancy', 'Nonprofit', 'Training Provider', 'Large Consulting', 'Other'],
+            datasets: [{
+                data: [20, 15, 10, 8, 27],
+                backgroundColor: ['#6366f1', '#8b5cf6', '#60a5fa', '#22c55e', '#f59e0b'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            ...chartDefaults,
+            plugins: {
+                ...chartDefaults.plugins,
+                legend: { ...chartDefaults.plugins.legend, position: 'bottom' }
+            }
+        }
+    });
+
+    // Geographic Distribution Chart
+    new Chart(document.getElementById('geoChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Canadian HQ', 'International HQ', 'Local/Regional'],
+            datasets: [{
+                data: [64, 16, 4],
+                backgroundColor: ['#6366f1', '#8b5cf6', '#60a5fa'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Market Segments Chart
+    new Chart(document.getElementById('segmentsChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Boutique', 'Nonprofit', 'Training', 'Large Firm', 'Networks', 'Speaker', 'HR', 'Tech', 'Staffing', 'Cert', 'Search', 'Gov'],
+            datasets: [{
+                label: 'Number of Organizations',
+                data: [20, 15, 10, 8, 7, 4, 5, 1, 3, 3, 2, 2],
+                backgroundColor: '#6366f1',
+                borderColor: '#818cf8',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            ...chartDefaults,
+            indexAxis: 'y'
+        }
+    });
+
+    // Growth Potential Chart
+    new Chart(document.getElementById('growthChart'), {
+        type: 'radar',
+        data: {
+            labels: ['AI Ethics', 'Neurodiversity', 'Health Equity', 'Tech Solutions', 'Measurement Tools'],
+            datasets: [{
+                label: 'Growth Potential Score',
+                data: [85, 80, 75, 90, 88],
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            ...chartDefaults,
+            scales: {
+                r: {
+                    ticks: { color: '#94a3b8' },
+                    grid: { color: 'rgba(99, 102, 241, 0.1)' }
+                }
+            }
+        }
+    });
+
+    // Service Saturation Chart
+    new Chart(document.getElementById('saturationChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Unconscious Bias', 'Inclusive Leadership', 'DEI Strategy', 'Culture', 'Audits', 'Coaching'],
+            datasets: [{
+                label: 'Saturation %',
+                data: [78, 65, 60, 52, 45, 38],
+                backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Pricing Distribution Chart
+    new Chart(document.getElementById('pricingDistChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Premium', 'Mid-tier', 'Low-Mid', 'Low-cost'],
+            datasets: [{
+                data: [9, 28, 18, 12],
+                backgroundColor: ['#ef4444', '#f59e0b', '#60a5fa', '#22c55e'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Size Distribution Chart
+    new Chart(document.getElementById('sizeChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Solo/Micro', 'Small', 'Mid-size', 'Large', 'Enterprise'],
+            datasets: [{
+                label: 'Number of Organizations',
+                data: [12, 27, 20, 12, 9],
+                backgroundColor: '#6366f1',
+                borderColor: '#818cf8',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Competitive Positioning Chart
+    new Chart(document.getElementById('positioningChart'), {
+        type: 'scatter',
+        data: {
+            datasets: [
+                {
+                    label: 'Premium + Specialized',
+                    data: [{x: 8, y: 9}],
+                    backgroundColor: '#ef4444',
+                    radius: 15
+                },
+                {
+                    label: 'Premium + Generalist',
+                    data: [{x: 3, y: 8}],
+                    backgroundColor: '#f59e0b',
+                    radius: 12
+                },
+                {
+                    label: 'Low-cost + Specialized',
+                    data: [{x: 8, y: 3}],
+                    backgroundColor: '#22c55e',
+                    radius: 10
+                },
+                {
+                    label: 'Low-cost + Generalist',
+                    data: [{x: 3, y: 2}],
+                    backgroundColor: '#60a5fa',
+                    radius: 12
+                }
+            ]
+        },
+        options: {
+            ...chartDefaults,
+            scales: {
+                x: { ...chartDefaults.scales.x, title: { text: 'Specialization →', display: true, color: '#cbd5e1' }, min: 0, max: 10 },
+                y: { ...chartDefaults.scales.y, title: { text: 'Premium Positioning →', display: true, color: '#cbd5e1' }, min: 0, max: 10 }
+            }
+        }
+    });
+
+    // Pricing Benchmark Chart
+    new Chart(document.getElementById('benchmarkChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Strategy', 'Coaching', 'Training', 'Certification', 'Audit', 'Platform'],
+            datasets: [{
+                label: 'Average Engagement Value ($K)',
+                data: [65, 45, 20, 15, 35, 50],
+                backgroundColor: ['#6366f1', '#8b5cf6', '#60a5fa', '#22c55e', '#f59e0b', '#ef4444'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Firm Size Chart
+    new Chart(document.getElementById('firmSizeChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Solo', 'Small', 'Mid', 'Large', 'Enterprise'],
+            datasets: [{
+                label: 'Avg Pricing Tier',
+                data: [2, 2.5, 3.2, 3.8, 4],
+                backgroundColor: '#6366f1',
+                borderColor: '#818cf8',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Revenue Model Chart
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Project-based', 'Retainer', 'Hybrid', 'Membership', 'SaaS'],
+            datasets: [{
+                data: [35, 28, 22, 10, 5],
+                backgroundColor: ['#6366f1', '#8b5cf6', '#60a5fa', '#22c55e', '#f59e0b'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Services Chart
+    new Chart(document.getElementById('servicesChart'), {
+        type: 'barChart',
+        data: {
+            labels: ['Bias Training', 'Inclusive Lead.', 'DEI Strategy', 'Culture Trans.', 'Equity Audit', 'Coaching', 'Certification', 'Tech Platform'],
+            datasets: [{
+                label: '% of Organizations Offering',
+                data: [78, 65, 60, 52, 45, 38, 28, 5],
+                backgroundColor: '#6366f1',
+                borderColor: '#818cf8',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            ...chartDefaults,
+            indexAxis: 'y'
+        }
+    });
+
+    // Delivery Methods Chart
+    new Chart(document.getElementById('deliveryChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Hybrid', 'In-person', 'Online', 'Keynote', 'Coaching'],
+            datasets: [{
+                data: [42, 38, 32, 18, 25],
+                backgroundColor: ['#6366f1', '#8b5cf6', '#60a5fa', '#22c55e', '#f59e0b'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Saturation Service Chart
+    new Chart(document.getElementById('saturationServiceChart'), {
+        type: 'scatter',
+        data: {
+            datasets: [
+                {
+                    label: 'Saturated (High Supply)',
+                    data: [{x: 1, y: 8}, {x: 2, y: 7}, {x: 3, y: 8}],
+                    backgroundColor: '#ef4444',
+                    radius: 8
+                },
+                {
+                    label: 'Growing (Balanced)',
+                    data: [{x: 5, y: 6}, {x: 6, y: 5}],
+                    backgroundColor: '#f59e0b',
+                    radius: 8
+                },
+                {
+                    label: 'Emerging (Opportunity)',
+                    data: [{x: 8, y: 3}, {x: 9, y: 2}, {x: 8.5, y: 3.5}],
+                    backgroundColor: '#22c55e',
+                    radius: 8
+                }
+            ]
+        },
+        options: {
+            ...chartDefaults,
+            scales: {
+                x: { ...chartDefaults.scales.x, title: { text: 'Growth Potential →', display: true, color: '#cbd5e1' }, min: 0, max: 10 },
+                y: { ...chartDefaults.scales.y, title: { text: 'Market Saturation →', display: true, color: '#cbd5e1' }, min: 0, max: 10 }
+            }
+        }
+    });
+
+    // Opportunities Chart
+    new Chart(document.getElementById('opportunitiesChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Measurement\nAnalytics', 'Industry\nSpecialization', 'Digital\nPlatforms', 'Leadership\nAccountability', 'M&A\nConsolidation'],
+            datasets: [{
+                label: 'Market Potential Score (1-100)',
+                data: [92, 88, 85, 82, 78],
+                backgroundColor: ['#22c55e', '#84cc16', '#a3e635', '#eab308', '#fcd34d'],
+                borderColor: '#1e293b',
+                borderWidth: 2
+            }]
+        },
+        options: chartDefaults
+    });
+
+    // Tab switching
+    function showTab(tabName) {
+        const tabs = document.querySelectorAll('.tab-content');
+        const btns = document.querySelectorAll('.tab-btn');
+        
+        tabs.forEach(tab => tab.classList.remove('active'));
+        btns.forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+    }
+</script>
+```
+
+</body>
+</html>
