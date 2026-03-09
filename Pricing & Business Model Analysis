@@ -1,0 +1,278 @@
+-----
+
+## title: Pricing Analysis
+layout: default
+
+# Pricing & Business Model Analysis
+
+## Executive Summary
+
+The Canadian DEI consulting market demonstrates **significant pricing variation** based on service type, delivery model, firm size, and client segment. Mid-market pricing dominates, with premium specialization and low-cost volume as secondary strategies.
+
+-----
+
+## Pricing Tier Distribution
+
+### Overview
+
+|Tier           |Price Range|% of Market|Org Count|Avg Margin|Primary Model          |
+|---------------|-----------|-----------|---------|----------|-----------------------|
+|**Premium**    |$40K-150K+ |11%        |9        |45-60%    |Retainer/Value-based   |
+|**Mid-Premium**|$20-40K    |18%        |14       |35-45%    |Project-based          |
+|**Mid-Tier**   |$10-20K    |28%        |22       |25-35%    |Project/Per-participant|
+|**Low-Mid**    |$5-10K     |23%        |18       |20-30%    |Workshop-based         |
+|**Low-Cost**   |<$5K       |20%        |17       |10-20%    |Online/Self-serve      |
+
+-----
+
+## Pricing by Service Type
+
+### Service-Based Pricing Benchmarks
+
+|Service                   |Typical Range    |Saturation|Margin    |Growth   |
+|--------------------------|-----------------|----------|----------|---------|
+|**Strategy Consulting**   |$40-100K+        |60%       |High      |Growing  |
+|**Culture Transformation**|$30-80K          |52%       |High      |Growing  |
+|**Executive Coaching**    |$5-15K/month     |38%       |Very High |Growing  |
+|**Equity Audits**         |$20-50K          |45%       |Medium    |Growing  |
+|**Training Workshops**    |$3-12K/day       |78%       |Low       |Declining|
+|**Certification Programs**|$1-8K/person     |28%       |Low-Medium|Stable   |
+|**Online Learning**       |$50-500/user/year|15%       |Medium    |Growing  |
+|**Measurement Platform**  |$5-20K/year      |3%        |Very High |Emerging |
+
+-----
+
+## Pricing by Delivery Model
+
+### In-Person Delivery
+
+- **Average Engagement:** $25-50K
+- **Duration:** 2-6 months
+- **Margin:** 30-45%
+- **Demand:** Stable declining (post-pandemic shift)
+- **Premium Multiplier:** 1.5x vs. online
+
+### Hybrid Delivery (In-person + Online)
+
+- **Average Engagement:** $20-40K
+- **Duration:** 3-9 months
+- **Margin:** 35-50%
+- **Demand:** Growing (42% of market)
+- **Note:** Optimal balance of interaction + scalability
+
+### Online/Virtual Delivery
+
+- **Average Engagement:** $8-20K
+- **Duration:** 1-3 months
+- **Margin:** 25-40%
+- **Demand:** Rapidly growing (32% of market)
+- **Advantage:** Scalability, accessibility, lower cost
+
+### Self-Service/Platform
+
+- **Average Engagement:** $500-5K/year
+- **Duration:** Continuous access
+- **Margin:** 40-70%
+- **Demand:** Emerging (5% of market)
+- **Advantage:** Highest margins, minimal labor
+
+-----
+
+## Pricing by Firm Size
+
+### Solo/Micro Consultants (1-5 people)
+
+- **Average Rate:** $2,000-5,000/day
+- **Typical Engagement:** $5-20K
+- **Business Model:** Project-based, local reach
+- **Margin:** 60-80% (high but capacity-constrained)
+
+### Small Firms (5-25 people)
+
+- **Average Rate:** $3,000-7,000/day
+- **Typical Engagement:** $10-40K
+- **Business Model:** Mixed (project + workshop)
+- **Margin:** 35-50%
+- **Market Position:** Growing, sustainable
+
+### Mid-Size Firms (25-100 people)
+
+- **Average Rate:** $5,000-12,000/day
+- **Typical Engagement:** $20-80K
+- **Business Model:** Balanced (strategy + delivery)
+- **Margin:** 30-40%
+- **Market Position:** Strong; optimal size
+
+### Large Firms (100+ people)
+
+- **Average Rate:** $8,000-20,000/day
+- **Typical Engagement:** $50-200K+
+- **Business Model:** Retainer, enterprise-focused
+- **Margin:** 25-35%
+- **Market Position:** Enterprise dominance
+
+-----
+
+## Pricing by Client Segment
+
+### Enterprise Clients (1000+ employees)
+
+- **Budget Allocation:** $50-500K/year for DEI
+- **Typical Engagement:** $80-200K+
+- **Decision Cycle:** 3-6 months
+- **Willingness to Pay:** Very high for measurable outcomes
+- **Premium Drivers:** Brand, track record, executive alignment
+
+### Mid-Market Clients (100-1000 employees)
+
+- **Budget Allocation:** $20-100K/year for DEI
+- **Typical Engagement:** $20-60K
+- **Decision Cycle:** 1-3 months
+- **Willingness to Pay:** High for outcomes
+- **Premium Drivers:** Specialization, ROI clarity
+
+### SMB Clients (10-100 employees)
+
+- **Budget Allocation:** $5-30K/year for DEI
+- **Typical Engagement:** $5-20K
+- **Decision Cycle:** 2-8 weeks
+- **Willingness to Pay:** Medium; price-sensitive
+- **Premium Drivers:** Accessibility, quick implementation
+
+### Nonprofit/Community Organizations
+
+- **Budget Allocation:** $2-10K/year for DEI
+- **Typical Engagement:** $2-10K
+- **Decision Cycle:** 1-4 months
+- **Willingness to Pay:** Low; grant/donation dependent
+- **Premium Drivers:** Mission alignment, affordability
+
+-----
+
+## Revenue Model Analysis
+
+### Project-Based Pricing (35% of firms)
+
+- **Model:** Fixed price per engagement
+- **Typical Range:** $5-100K per project
+- **Pros:** Simplicity, clarity, cash flow predictability
+- **Cons:** Underutilization risk, scope creep
+- **Best For:** Strategy, audits, workshops
+
+### Retainer/Monthly Recurring (28% of firms)
+
+- **Model:** Monthly fee for ongoing access/services
+- **Typical Range:** $3-15K/month
+- **Pros:** Predictable revenue, deeper engagement, relationship building
+- **Cons:** Churn risk, upfront commitment required
+- **Best For:** Ongoing coaching, strategy support, facilitation
+
+### Hybrid Model (22% of firms)
+
+- **Model:** Retainer + project add-ons
+- **Typical Range:** $2-8K/month + $5-50K projects
+- **Pros:** Revenue diversification, flexibility, stickiness
+- **Cons:** Complexity, pricing transparency challenges
+- **Best For:** Mid-size firms serving multiple functions
+
+### Per-Participant Pricing (10% of firms)
+
+- **Model:** Charge per person (training, certification)
+- **Typical Range:** $500-5K per participant
+- **Pros:** Scales with demand, simple accounting
+- **Cons:** Highly commoditized, margin pressure
+- **Best For:** Training, workshops, certification
+
+### Membership/Subscription (3% of firms)
+
+- **Model:** Annual or monthly membership for access
+- **Typical Range:** $1-10K/year per organization
+- **Pros:** Predictable revenue, community building
+- **Cons:** Low perceived value, churn risk
+- **Best For:** Networks, resource libraries, platforms
+
+### SaaS/Platform-Based (2% of firms)
+
+- **Model:** Annual or usage-based licensing
+- **Typical Range:** $5-50K/year depending on scale
+- **Pros:** Highest margins (50-70%), unlimited scalability
+- **Cons:** High upfront investment, long sales cycle
+- **Best For:** Assessments, learning platforms, measurement tools
+
+-----
+
+## Pricing Optimization Insights
+
+### Premium Pricing Factors
+
+**Justifies 40-50% price premium:**
+
+1. **Specialization** — Deep expertise in specific domain (e.g., AI Ethics, neurodiversity)
+1. **Proprietary Methodology** — Unique approach or assessment tool
+1. **Measurable Outcomes** — Clear ROI metrics and accountability
+1. **Thought Leadership** — Published research, speaking authority
+1. **Executive Alignment** — C-suite engagement and sponsorship
+1. **Industry Expertise** — Vertical specialization (tech, healthcare, finance)
+
+### Margin Optimization Strategies
+
+**High-Margin Plays:**
+
+1. **Outcomes-Based Pricing** — Tie pricing to results (30-50% margins)
+1. **Productization** — Convert services to scalable products/programs (40-60% margins)
+1. **Technology Enablement** — Use tools to reduce labor intensity (45-70% margins)
+1. **Specialization** — Focus on underserved niches with lower competition (35-50% margins)
+
+**Margin Compression Risks:**
+
+1. **Commoditization** — Generic training offering (10-20% margins)
+1. **Scale-dependent Model** — Relies on volume not value (15-25% margins)
+1. **Labor-Intensive Delivery** — High facilitation costs (20-30% margins)
+
+-----
+
+## Pricing Recommendations by Segment
+
+### For Boutique Consultancies
+
+- **Strategy:** Move upmarket with specialization
+- **Pricing:** $30-100K+ per engagement
+- **Model:** Hybrid (retainer + project-based)
+- **Focus:** Premium + Specialized quadrant
+
+### For Training Providers
+
+- **Strategy:** Shift from per-participant to value-based
+- **Pricing:** $15-40K per program
+- **Model:** Hybrid or subscription-based
+- **Focus:** Outcomes measurement, corporate training
+
+### For Large Consulting Firms
+
+- **Strategy:** Retain enterprise position; expand downmarket selectively
+- **Pricing:** $50-200K+ per engagement
+- **Model:** Retainer with project add-ons
+- **Focus:** Enterprise transformation, measurement
+
+### For New Entrants
+
+- **Strategy:** Target underserved segments with specialization
+- **Pricing:** $20-60K per engagement (premium positioning)
+- **Model:** Project-based initially; evolve to retainer
+- **Focus:** Measurement, technology, industry verticals
+
+-----
+
+## Price Sensitivity by Client Type
+
+|Client Type|Price Sensitivity|Key Decision Factor|Optimal Positioning      |
+|-----------|-----------------|-------------------|-------------------------|
+|Enterprise |Low              |Results/ROI        |Premium + outcomes-based |
+|Mid-Market |Medium           |Value for money    |Mid-tier + specialization|
+|SMB        |High             |Budget constraints |Low-mid + accessibility  |
+|Nonprofit  |Very High        |Mission fit        |Low-cost + impact focus  |
+
+-----
+
+**Last Updated:** March 2026  
+**Data Source:** Canadian DEI Consulting Ecosystem Dataset (80 organizations)
