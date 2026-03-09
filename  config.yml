@@ -1,0 +1,30 @@
+title: DEI Market Intelligence Research
+description: Strategic analysis of the Canadian DEI consulting ecosystem
+theme: jekyll-theme-cayman
+baseurl: /dei-market-intelligence
+
+# Navigation
+collections:
+  pages:
+    output: true
+    permalink: /:name/
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+# Markdown processing
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# Exclude files
+exclude:
+  - .github
+  - .gitignore
+  - LICENSE
+  - README.md
+  - CNAME
