@@ -144,7 +144,7 @@ for i, c in enumerate(S.CONTACTS, 1):
 # ------------------------------------------------------------------ Opportunities
 STAGE_MAP = {"Confirmed":"Confirmed","In discussion":"Conversation active","Contacted":"Contacted","Declined":"Closed declined","Do not contact":"Do not contact","":"Prospect identified"}
 CURATED = {  # key: (stage, priority, next action, next date, health, risks, last contact)
- "BLLT":("Closed won","Priority 1","Reply to the BLLT invoicing contact with finalized plans so Invoice #2 is processed",D(2026,9,8),"At risk","Invoice #2 ($9,500) on hold; Sept 8 Roam artwork and Sept 17 print need BLLT logo approval lead times",D(2026,9,2)),
+ "BLLT":("Closed won","Priority 1","Reply to Andrew Hercus with finalized plans so Invoice #2 is processed",D(2026,9,8),"At risk","Invoice #2 ($9,500) on hold; Sept 8 Roam artwork and Sept 17 print need BLLT logo approval lead times",D(2026,9,2)),
  "SKIBIG3":("Closed won","Priority 1","Schedule the Adventure Hub Lavender Lounge session; confirm VIP ticket quantity",D(2026,9,20),"Strong","Sticker designs pending; exclusivity window Sept 21 to Oct 12",D(2026,8,28)),
  "BHC":("Confirmed","Priority 1","Send invoice and request countersigned agreement and logos",D(2026,9,12),"Stable","Countersigned copy and assets not filed",D(2026,8,14)),
  "QTIL":("Closed won","Priority 3","Send Pride Market booth details",D(2026,9,20),"Strong","",D(2026,8,31)),
@@ -336,6 +336,7 @@ put(ws, 3, ["IMP-002", S.TODAY, "Data quality", "Owner and next action were empt
 ws = sheet("AuditLog", ["Timestamp","Actor","Action","Record IDs","Detail","Source"], [18,12,26,30,70,30], "7F7F7F", freeze=None)
 put(ws, 2, [dt.datetime(2026,9,6,0,0), "Claude", "Workbook built", "all", "Initial build from Gate 1 audit; seeded organizations, agreements, contributions, deliverables, communications, tickets, events, metrics, decisions.", "Gate 1 decision brief"])
 put(ws, 3, [dt.datetime(2026,9,6,0,0), "Jeffrey", "Decisions recorded", "DEC-001 to DEC-011", "Gate 1 approvals and corrections (Moxy venue, payments received, Roam passes, Town of Banff, in-kind rule, Brand Asset Library location).", "Chat 2026-09-05"])
+put(ws, 4, [dt.datetime(2026,9,6,20,0), "Jeffrey", "Decision approved", "DEC-012; CTB-014", "ATB Fab Fiver Bucks treated as activation in-kind ($5,000), not cash.", "ED message 2026-09-06"])
 
 # ------------------------------------------------------------------ Source index
 ws = sheet("SourceIndex", ["Source ID","System","Title","ID or link","Source modified","Retrieved","Authority","Note"], [10,10,50,40,12,12,26,44], "7F7F7F", freeze=None)
