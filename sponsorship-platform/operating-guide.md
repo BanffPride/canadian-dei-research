@@ -49,6 +49,9 @@ PRE-FESTIVAL THANK-YOU EMAIL
 PARTNER REPORTS
 Reports tab tracks one report per confirmed partner (BLLT Final Report due 12 November in Appendix B format; others by 30 November). A report only claims what Deliverables shows as Delivered and verified with evidence. Organization-wide impact is labelled separately from partner-attributable metrics (Metrics tab, Scope column).
 
+BANFF PRIDE MENU (after the Apps Script is installed)
+Go to ED Dashboard; Add a new partner (creates the Organizations and Opportunities rows with IDs); Verify workbook; Log exception snapshot; Schedule or remove the Monday snapshot. New rows get IDs automatically, partner names fill from the Partner ID, Delivered and verified is refused without an Evidence ID, decisions and approvals are date-stamped, and every edit is written to AuditLog.
+
 WHAT CLAUDE DOES AUTOMATICALLY (read-only unless approved)
 Reads the Gmail Sponsorship label, Granola and Todoist since the last checkpoint; proposes new commitments into Communications with a Proposed records column; runs the exception report; never sends, never edits signed agreements, never marks a contractual deliverable complete without evidence.
 
