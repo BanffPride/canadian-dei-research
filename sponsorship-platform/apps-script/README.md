@@ -44,3 +44,11 @@
 ## Not in scope
 
 The script cannot send email, create Todoist tasks or move Drive files. Those remain approval-gated and are done by Claude on instruction.
+
+## Update packs
+
+When Claude reads new emails, meetings or tasks, the resulting changes arrive as a dated file `Updates_YYYY-MM-DD.gs`. Paste it as a second file in the same Apps Script project, save, pick its `applyUpdates_...` function and run it once. Each pack is guarded against a second run, cites the Gmail thread for every row, assigns IDs through the same helpers as the menu, copies formula columns for appended rows, and writes one AuditLog row. Review the pack before running it: it is the approval step for any financial values it adds.
+
+| Pack | Covers | Adds or changes |
+|---|---|---|
+| `Updates_2026-09-08.gs` | 15 Gmail threads, 4 to 8 September | 5 organizations, 2 agreements, 3 contributions, 2 evidence rows, 18 deliverables (3 verified, 2 updated), 4 events, 1 ticket row, 13 opportunity updates, 3 brand asset rows, 3 reports, 3 thank-you rows, 12 communications, 15 source index rows |

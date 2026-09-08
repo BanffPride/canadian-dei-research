@@ -59,7 +59,8 @@ const PARTNER_FOLDERS = {
   'ORG-009': '10wyWpw9DN4owUyMN7rce078R6ghvjnUQ', 'ORG-010': '1XIdHyXorKetIbK7enTkvprTJ5V7RZB3b',
   'ORG-011': '16z6Y47pZj3eSKfMJ4c_5yQNCx23PQofF', 'ORG-012': '19LXQgPYg8W1Rag83fGLClONr9gfhSM33',
   'ORG-013': '1Sqj_4uTr64UJI3oTXK1YifzcEeCRImxO', 'ORG-014': '1XIVf87eNHYn46n6vYBrLPwgmfvT9nkMC',
-  'ORG-015': '1L-EBrtwd1xjlqBmObccl2tvo5JdHvXEt'
+  'ORG-015': '1L-EBrtwd1xjlqBmObccl2tvo5JdHvXEt',
+  'ORG-102': '15z9172oOSJiPS35g1mkY8J49AQ4stsr-', 'ORG-127': '1gNzWFbVRe_DqrCuoHwQwvO0SPERtzlj-', 'ORG-155': '1RoTVe8CD2AfI-Z5nLV1ZpK7rkOVJ7p6C'
 };
 const TEMPLATE_FOLDER = 'https://drive.google.com/drive/folders/1WwepLiH29J1F1OM1MhdZe9eStzjSm3Gf';
 
