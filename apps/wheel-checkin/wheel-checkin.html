@@ -1,0 +1,559 @@
+<title>Wheel Check-in</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F2F1F6; --surface:#FFFFFF; --soft:#E9E7F0; --ink:#1E1C2A; --muted:#6A677A; --line:#DDDBE5;
+  --accent:#4E4380; --accent-ink:#FFFFFF; --focus:#7A6BC8;
+  --good:#2F7A2C; --due:#B4581A;
+  --c-anger:#C4457F; --c-fear:#9E3A10; --c-love:#D9AE2E; --c-joy:#2F7A2C; --c-surprise:#1A8FAE; --c-sadness:#6A62D0;
+  --shadow:0 1px 2px rgba(30,28,42,.06),0 6px 20px rgba(30,28,42,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#16151C; --surface:#201F28; --soft:#2A2833; --ink:#ECEAF2; --muted:#A09DB0; --line:#363441;
+    --accent:#B9ACF2; --accent-ink:#16151C; --focus:#C9BEF8;
+    --good:#7CC46A; --due:#E59A5C;
+    --c-anger:#913968; --c-fear:#C05008; --c-love:#AB9017; --c-joy:#207029; --c-surprise:#33A3B4; --c-sadness:#6047B0;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#16151C; --surface:#201F28; --soft:#2A2833; --ink:#ECEAF2; --muted:#A09DB0; --line:#363441;
+  --accent:#B9ACF2; --accent-ink:#16151C; --focus:#C9BEF8;
+  --good:#7CC46A; --due:#E59A5C;
+  --c-anger:#913968; --c-fear:#C05008; --c-love:#AB9017; --c-joy:#207029; --c-surprise:#33A3B4; --c-sadness:#6047B0;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding-block:20px 56px;padding-inline:16px}
+h1,h2,h3{font-family:"Fraunces","Iowan Old Style",Georgia,serif;font-weight:600;letter-spacing:-.01em;text-wrap:balance;margin:0}
+h1{font-size:30px;line-height:1.1}
+h2{font-size:20px;margin-bottom:10px}
+h3{font-size:17px;margin-bottom:6px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* header */
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.head .date{font-family:"Fraunces",Georgia,serif;font-size:17px;color:var(--muted)}
+.checkins{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.ci{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;text-align:left}
+.ci strong{font-size:15px}
+.ci .state{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.ci .dot{width:9px;height:9px;border-radius:50%;background:var(--line);flex:none}
+.ci.done .dot{background:var(--good)} .ci.done .state{color:var(--good)}
+.ci.due .dot{background:var(--due)} .ci.due .state{color:var(--due);font-weight:600}
+.ci.due{border-color:color-mix(in oklab,var(--due) 55%,var(--line))}
+.ci[data-cta]:hover{border-color:var(--accent)}
+
+/* tabs */
+.tabs{display:flex;gap:4px;background:var(--soft);padding:4px;border-radius:12px;margin-bottom:18px}
+.tabs button{flex:1;border:0;background:transparent;padding:9px 6px;border-radius:9px;font-weight:600;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.panel{display:flex;flex-direction:column;gap:18px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 16px}
+.field{display:flex;flex-direction:column;gap:8px}
+.label{font-weight:600;font-size:15px}
+textarea,input[type="time"]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+textarea{min-height:84px;resize:vertical;line-height:1.4}
+textarea::placeholder{color:var(--muted);opacity:.8}
+
+/* segmented */
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:7px 13px;font-size:15px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.intensity{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.intensity button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:13px;line-height:1.1}
+.intensity button b{font-size:18px;font-family:"Fraunces",Georgia,serif;font-weight:600}
+.intensity button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* wheel */
+.wheelwrap{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:14px;align-items:start}
+@media (max-width:480px){.wheelwrap{grid-template-columns:1fr}.wheelwrap svg{max-width:240px;margin:0 auto}}
+.wheelwrap svg{width:100%;height:auto;display:block}
+.wedge{cursor:pointer;stroke:var(--surface);stroke-width:2;transition:opacity .15s}
+.wedge:hover{opacity:.85}
+.wedge-label{font-family:"Source Sans 3",system-ui,sans-serif;font-size:13px;font-weight:600;fill:var(--ink);pointer-events:none}
+.center-text{font-family:"Fraunces",Georgia,serif;font-size:12px;fill:var(--muted);text-anchor:middle}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:15px}
+.chips button[aria-pressed="true"]{border-color:var(--ink);background:var(--soft);font-weight:600}
+.chips button.ghost{border-style:dashed;color:var(--muted)}
+.rows{display:flex;flex-direction:column;gap:10px;min-width:0}
+.rowlbl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:5px}
+
+/* selected feelings */
+.picked{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px 4px 8px;font-size:14px;border:1px solid transparent;background:color-mix(in oklab,var(--c) 18%,var(--surface));border-color:color-mix(in oklab,var(--c) 40%,var(--line))}
+.tag i{width:9px;height:9px;border-radius:50%;background:var(--c);flex:none}
+.tag .path{color:var(--muted)}
+.tag button{border:0;background:transparent;padding:0 0 0 2px;color:var(--muted);font-size:16px;line-height:1}
+.tag button:hover{color:var(--ink)}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:11px;padding:10px 16px;font-weight:600}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn.danger{color:#B4321A}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.notice{background:var(--soft);border-radius:10px;padding:8px 12px;font-size:14px;color:var(--muted)}
+
+/* history */
+.day{display:flex;flex-direction:column;gap:10px}
+.dayhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-top:6px}
+.dayhead h3{margin:0}
+.entry{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.entry .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.entry .when{font-family:"Fraunces",Georgia,serif;font-size:16px;font-variant-numeric:tabular-nums}
+.pill{font-size:12px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:var(--muted);background:var(--soft);padding:2px 8px;border-radius:999px}
+.entry p{margin:0;white-space:pre-wrap}
+.entry .q{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.dots{display:inline-flex;gap:3px;align-items:center;margin-left:8px;vertical-align:middle}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--ink)}
+.entry .tools{display:flex;gap:12px}
+.entry .tools button{border:0;background:none;padding:0;color:var(--muted);font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.entry .tools button:hover{color:var(--ink)}
+.empty{text-align:center;color:var(--muted);padding:28px 12px}
+
+/* patterns */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat b{display:block;font-family:"Fraunces",Georgia,serif;font-size:26px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+@media (max-width:420px){.stats{grid-template-columns:1fr 1fr}}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:88px 1fr 34px;align-items:center;gap:10px;font-size:15px;position:relative}
+.bar .track{height:14px;background:var(--soft);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--c);border-radius:0 4px 4px 0;min-width:0;transition:width .3s}
+.bar .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.bar:hover .n{color:var(--ink)}
+.toplist{display:flex;flex-direction:column;gap:6px}
+.toplist div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding:6px 0;font-size:15px}
+.toplist div:last-child{border-bottom:0}
+.toplist .n{color:var(--muted);font-variant-numeric:tabular-nums}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:13px;padding:5px 9px;border-radius:7px;white-space:nowrap;transform:translate(-50%,-120%);opacity:0;transition:opacity .1s;z-index:2}
+.tip.show{opacity:1}
+.settings{display:flex;gap:14px;flex-wrap:wrap;align-items:end}
+.settings label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted)}
+.settings input{width:120px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="eyebrow">Emotion &amp; feeling wheel</div>
+      <h1>Wheel Check-in</h1>
+    </div>
+    <div class="date" id="today-label"></div>
+  </header>
+
+  <div class="checkins">
+    <button class="ci" id="ci-midday" data-cta data-slot="midday"><strong>Midday</strong><span class="state"><i class="dot"></i><span>…</span></span></button>
+    <button class="ci" id="ci-evening" data-cta data-slot="evening"><strong>Evening</strong><span class="state"><i class="dot"></i><span>…</span></span></button>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-log" aria-selected="true" aria-controls="panel-log">New entry</button>
+    <button role="tab" id="tab-history" aria-selected="false" aria-controls="panel-history">History</button>
+    <button role="tab" id="tab-patterns" aria-selected="false" aria-controls="panel-patterns">Patterns</button>
+  </div>
+
+  <!-- NEW ENTRY -->
+  <section class="panel" id="panel-log" role="tabpanel">
+    <div class="notice" id="storage-notice" hidden></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:18px">
+      <div class="field">
+        <div class="label" id="entry-heading">This is my…</div>
+        <div class="seg" id="slot-seg" role="group" aria-label="Check-in type">
+          <button data-slot="midday" aria-pressed="false">Midday check-in</button>
+          <button data-slot="evening" aria-pressed="false">Evening check-in</button>
+          <button data-slot="anytime" aria-pressed="false">Anytime note</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">What am I feeling?</div>
+        <div class="wheelwrap">
+          <svg id="wheel" viewBox="0 0 240 240" role="group" aria-label="Core emotions"></svg>
+          <div class="rows">
+            <div id="row-secondary"><div class="rowlbl" id="lbl-secondary">Tap a colour on the wheel</div><div class="chips" id="chips-secondary"></div></div>
+            <div id="row-specific" hidden><div class="rowlbl" id="lbl-specific">More specifically</div><div class="chips" id="chips-specific"></div></div>
+          </div>
+        </div>
+        <div class="picked" id="picked"></div>
+        <div class="small muted" id="picked-hint">Nothing picked yet. You can add more than one feeling.</div>
+      </div>
+
+      <div class="field">
+        <div class="label">How strong is it?</div>
+        <div class="intensity" id="intensity" role="group" aria-label="Intensity">
+          <button data-v="1" aria-pressed="false"><b>1</b>Faint</button>
+          <button data-v="2" aria-pressed="false"><b>2</b>Mild</button>
+          <button data-v="3" aria-pressed="false"><b>3</b>Moderate</button>
+          <button data-v="4" aria-pressed="false"><b>4</b>Strong</button>
+          <button data-v="5" aria-pressed="false"><b>5</b>Intense</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="situation">What's the situation?</label>
+        <textarea id="situation" placeholder="Where I am, who I'm with, what just happened…"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="label" for="why">Why might I be feeling this?</label>
+        <textarea id="why" placeholder="What's underneath it, what it reminds me of, what I need…"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="save">Save entry</button>
+        <button class="btn" id="cancel-edit" hidden>Cancel edit</button>
+        <span class="small muted" id="save-hint"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Check-in times</h3>
+      <p class="small muted" style="margin:0 0 10px">The cards at the top turn amber once a check-in is due. Times are kept in this browser.</p>
+      <div class="settings">
+        <label>Midday <input type="time" id="t-midday"></label>
+        <label>Evening <input type="time" id="t-evening"></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="panel" id="panel-history" role="tabpanel" hidden>
+    <div id="history"></div>
+  </section>
+
+  <!-- PATTERNS -->
+  <section class="panel" id="panel-patterns" role="tabpanel" hidden>
+    <div class="seg" id="range-seg" role="group" aria-label="Range">
+      <button data-days="7" aria-pressed="true">Last 7 days</button>
+      <button data-days="30" aria-pressed="false">Last 30 days</button>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="card">
+      <h3>Core emotions named</h3>
+      <p class="small muted" style="margin:0 0 12px">How many entries touched each part of the wheel.</p>
+      <div class="bars" id="bars"></div>
+    </div>
+    <div class="card">
+      <h3>Most named feelings</h3>
+      <div class="toplist" id="toplist"></div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div class="tip" id="tip"></div>
+
+<script>
+/* ---------- The wheel (Junto Institute Emotion & Feeling Wheel) ---------- */
+const WHEEL = [
+  { core:"Anger", key:"anger", secondary:[
+    ["Rage",["Hate","Hostile"]],["Exasperated",["Agitated","Frustrated"]],["Irritable",["Annoyed","Aggravated"]],
+    ["Envy",["Resentful","Jealous"]],["Disgust",["Contempt","Revolted"]]]},
+  { core:"Sadness", key:"sadness", secondary:[
+    ["Suffering",["Agony","Hurt"]],["Sadness",["Depressed","Sorrow"]],["Disappointed",["Dismayed","Displeased"]],
+    ["Shameful",["Regretful","Guilty"]],["Neglected",["Isolated","Lonely"]],["Despair",["Grief","Powerless"]]]},
+  { core:"Surprise", key:"surprise", secondary:[
+    ["Stunned",["Shocked","Dismayed"]],["Confused",["Disillusioned","Perplexed"]],["Amazed",["Astonished","Awe-struck"]],
+    ["Overcome",["Speechless","Astounded"]],["Moved",["Stimulated","Touched"]]]},
+  { core:"Joy", key:"joy", secondary:[
+    ["Content",["Pleased","Satisfied"]],["Happy",["Amused","Delighted"]],["Cheerful",["Jovial","Blissful"]],
+    ["Proud",["Triumphant","Illustrious"]],["Optimistic",["Eager","Hopeful"]],["Enthusiastic",["Excited","Zeal"]],
+    ["Elation",["Euphoric","Jubilation"]],["Enthralled",["Enchanted","Rapture"]]]},
+  { core:"Love", key:"love", secondary:[
+    ["Affectionate",["Romantic","Fondness"]],["Longing",["Sentimental","Attracted"]],["Desire",["Passion","Infatuation"]],
+    ["Tenderness",["Caring","Compassionate"]],["Peaceful",["Relieved","Satisfied"]]]},
+  { core:"Fear", key:"fear", secondary:[
+    ["Scared",["Frightened","Helpless"]],["Terror",["Panic","Hysterical"]],["Insecure",["Inferior","Inadequate"]],
+    ["Nervous",["Worried","Anxious"]],["Horror",["Mortified","Dread"]]]},
+];
+const CORE_ORDER = ["anger","fear","love","joy","surprise","sadness"]; // fixed chart order
+const INTENSITY = {1:"Faint",2:"Mild",3:"Moderate",4:"Strong",5:"Intense"};
+const SLOT_LABEL = {midday:"Midday", evening:"Evening", anytime:"Anytime"};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const localDate = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const fmtTime = iso => { const d=new Date(iso); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const lsGet = (k, fb) => { try { const v = localStorage.getItem(k); return v==null ? fb : JSON.parse(v); } catch { return fb; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+/* ---------- Storage: db capability, falling back to this browser ---------- */
+let entries = [];             // newest first
+let store = null;             // {save(e), remove(id)}
+let listeners = [];
+const notify = () => listeners.forEach(fn => fn());
+
+function localStore(){
+  const KEY = "wheel-checkin-entries";
+  const load = () => { entries = (lsGet(KEY, [])).sort((a,b)=> b.ts.localeCompare(a.ts)); notify(); };
+  load();
+  return {
+    async save(e){ const i = entries.findIndex(x=>x.id===e.id); if(i>=0) entries[i]=e; else entries.push(e); lsSet(KEY, entries); load(); },
+    async remove(id){ entries = entries.filter(x=>x.id!==id); lsSet(KEY, entries); load(); },
+  };
+}
+async function initStore(){
+  let db = null;
+  try { db = await window.claude?.use?.("db"); } catch { db = null; }
+  const notice = $("#storage-notice");
+  if(!db){
+    store = localStore();
+    notice.textContent = "Saved in this browser only. Open the app from claude.ai while signed in to keep entries across devices.";
+    notice.hidden = false;
+    return;
+  }
+  const col = db.collection("entries");
+  col.orderBy("ts","desc").limit(1000).onSnapshot(snap => {
+    entries = snap.docs.filter(d=>d.exists).map(d => ({ id:d.id, ...d.data() }));
+    notify();
+  }, err => {
+    notice.textContent = "Lost the connection to saved entries (" + err.code + "). Reload the page to reconnect.";
+    notice.hidden = false;
+  });
+  store = {
+    async save(e){ const {id, ...body} = e; await col.doc(id).set(body); },
+    async remove(id){ await col.doc(id).delete(); },
+  };
+}
+
+/* ---------- Settings (per browser) ---------- */
+const times = Object.assign({midday:"12:30", evening:"20:30"}, lsGet("wheel-checkin-times", {}));
+$("#t-midday").value = times.midday; $("#t-evening").value = times.evening;
+for(const k of ["midday","evening"]){
+  $("#t-"+k).addEventListener("change", e => { if(e.target.value){ times[k]=e.target.value; lsSet("wheel-checkin-times", times); renderCheckins(); } });
+}
+const minutesOf = hhmm => { const [h,m]=hhmm.split(":").map(Number); return h*60+m; };
+
+/* ---------- Form state ---------- */
+const form = { id:null, ts:null, slot:"anytime", core:null, secondary:null, picked:[], intensity:null, situation:"", why:"" };
+const DRAFT_KEY = "wheel-checkin-draft";
+function saveDraft(){ if(!form.id) lsSet(DRAFT_KEY, {slot:form.slot, picked:form.picked, intensity:form.intensity, situation:form.situation, why:form.why}); }
+function clearDraft(){ try{ localStorage.removeItem(DRAFT_KEY); }catch{} }
+
+function defaultSlot(){
+  const now = new Date(); const mins = now.getHours()*60+now.getMinutes();
+  const today = localDate(now);
+  const done = s => entries.some(e => e.date===today && e.slot===s);
+  if(mins >= minutesOf(times.evening) && !done("evening")) return "evening";
+  if(mins >= minutesOf(times.midday) && !done("midday")) return "midday";
+  return "anytime";
+}
+
+/* wheel drawing */
+function polar(cx,cy,r,deg){ const a=(deg-90)*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+function wedgePath(cx,cy,r1,r2,a0,a1){
+  const [x0,y0]=polar(cx,cy,r2,a0),[x1,y1]=polar(cx,cy,r2,a1),[x2,y2]=polar(cx,cy,r1,a1),[x3,y3]=polar(cx,cy,r1,a0);
+  return `M${x0},${y0}A${r2},${r2},0,0,1,${x1},${y1}L${x2},${y2}A${r1},${r1},0,0,0,${x3},${y3}Z`;
+}
+function renderWheel(){
+  const svg = $("#wheel"); const n = WHEEL.length; let html = "";
+  WHEEL.forEach((w,i) => {
+    const a0 = -30 + i*60, a1 = a0+60, mid = a0+30;
+    const sel = form.core===w.key;
+    const fill = sel ? `color-mix(in oklab, var(--c-${w.key}) 62%, var(--surface))` : `color-mix(in oklab, var(--c-${w.key}) 26%, var(--surface))`;
+    const [lx,ly] = polar(120,120,84,mid);
+    html += `<path class="wedge" d="${wedgePath(120,120,50,114,a0,a1)}" fill="${fill}" data-core="${w.key}" role="button" tabindex="0" aria-pressed="${sel}" aria-label="${w.core}"><title>${w.core}</title></path>`;
+    html += `<text class="wedge-label" x="${lx}" y="${ly+4}" text-anchor="middle">${w.core}</text>`;
+  });
+  const c = WHEEL.find(w=>w.key===form.core);
+  html += `<circle cx="120" cy="120" r="46" fill="var(--surface)"/>`;
+  html += `<text class="center-text" x="120" y="${c?116:117}">${c? "Feeling" : "Tap a"}</text><text class="center-text" x="120" y="${c?132:133}" style="fill:var(--ink);font-weight:600;font-size:${c?14:12}px">${c? c.core.toLowerCase() : "colour"}</text>`;
+  svg.innerHTML = html;
+  svg.querySelectorAll(".wedge").forEach(p => {
+    const pick = () => { form.core = p.dataset.core; form.secondary = null; renderWheel(); renderChips(); };
+    p.addEventListener("click", pick);
+    p.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(); } });
+  });
+}
+function renderChips(){
+  const w = WHEEL.find(x=>x.key===form.core);
+  const sec = $("#chips-secondary"), spec = $("#chips-specific");
+  if(!w){ $("#lbl-secondary").textContent = "Tap a colour on the wheel"; sec.innerHTML=""; $("#row-specific").hidden = true; return; }
+  $("#lbl-secondary").textContent = `${w.core} feels like…`;
+  sec.innerHTML = w.secondary.map(([s]) => `<button type="button" data-s="${s}" aria-pressed="${form.secondary===s}">${s}</button>`).join("");
+  sec.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { form.secondary = b.dataset.s; renderChips(); }));
+  const s = w.secondary.find(([name]) => name===form.secondary);
+  if(!s){ $("#row-specific").hidden = true; return; }
+  $("#row-specific").hidden = false;
+  $("#lbl-specific").textContent = `${s[0]}, more specifically…`;
+  spec.innerHTML = s[1].map(t => `<button type="button" data-t="${t}">${t}</button>`).join("") +
+    `<button type="button" class="ghost" data-t="">Just “${s[0]}”</button>`;
+  spec.querySelectorAll("button").forEach(b => b.addEventListener("click", () => addPick(w.key, w.core, s[0], b.dataset.t || null)));
+}
+function addPick(key, core, secondary, specific){
+  const dup = form.picked.some(p => p.core===core && p.secondary===secondary && p.specific===specific);
+  if(!dup) form.picked.push({key, core, secondary, specific});
+  form.secondary = null;
+  renderChips(); renderPicked(); saveDraft();
+}
+function renderPicked(){
+  const el = $("#picked");
+  el.innerHTML = form.picked.map((p,i) => `<span class="tag" style="--c:var(--c-${p.key})"><i></i><span class="path">${p.core} › ${p.specific ? p.secondary + " › " : ""}</span><strong>${p.specific || p.secondary}</strong><button type="button" aria-label="Remove ${p.specific || p.secondary}" data-i="${i}">×</button></span>`).join("");
+  el.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { form.picked.splice(+b.dataset.i,1); renderPicked(); saveDraft(); }));
+  $("#picked-hint").hidden = form.picked.length>0;
+  $("#save").disabled = form.picked.length===0;
+}
+function renderSlotSeg(){ $("#slot-seg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.slot===form.slot))); }
+function renderIntensity(){ $("#intensity").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v===form.intensity))); }
+$("#slot-seg").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; form.slot=b.dataset.slot; renderSlotSeg(); saveDraft(); });
+$("#intensity").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; form.intensity=+b.dataset.v; renderIntensity(); saveDraft(); });
+$("#situation").addEventListener("input", e => { form.situation=e.target.value; saveDraft(); });
+$("#why").addEventListener("input", e => { form.why=e.target.value; saveDraft(); });
+
+function resetForm(slot){
+  Object.assign(form, { id:null, ts:null, slot: slot || defaultSlot(), core:null, secondary:null, picked:[], intensity:null, situation:"", why:"" });
+  $("#situation").value=""; $("#why").value="";
+  $("#entry-heading").textContent = "This is my…";
+  $("#cancel-edit").hidden = true; $("#save").textContent = "Save entry"; $("#save-hint").textContent="";
+  renderAll();
+}
+function loadForEdit(e){
+  Object.assign(form, { id:e.id, ts:e.ts, slot:e.slot, core:null, secondary:null, picked:(e.emotions||[]).map(x=>({...x})), intensity:e.intensity||null, situation:e.situation||"", why:e.why||"" });
+  $("#situation").value=form.situation; $("#why").value=form.why;
+  $("#entry-heading").textContent = `Editing entry from ${e.date} at ${fmtTime(e.ts)}`;
+  $("#cancel-edit").hidden = false; $("#save").textContent = "Save changes";
+  renderAll(); showTab("log"); window.scrollTo({top:0, behavior:"smooth"});
+}
+$("#cancel-edit").addEventListener("click", () => resetForm());
+$("#save").addEventListener("click", async () => {
+  if(form.picked.length===0){ $("#save-hint").textContent = "Pick at least one feeling from the wheel."; return; }
+  if(!store){ $("#save-hint").textContent = "Still connecting to storage, try again in a moment."; return; }
+  const now = new Date();
+  const ts = form.ts || now.toISOString();
+  const entry = {
+    id: form.id || ("e" + Date.now().toString(36) + Math.random().toString(36).slice(2,6)),
+    ts, date: localDate(new Date(ts)), slot: form.slot,
+    emotions: form.picked.map(p=>({key:p.key, core:p.core, secondary:p.secondary, specific:p.specific})),
+    intensity: form.intensity, situation: form.situation.trim(), why: form.why.trim(),
+    updatedAt: now.toISOString(),
+  };
+  $("#save").disabled = true; $("#save-hint").textContent = "Saving…";
+  try {
+    await store.save(entry);
+    toast(form.id ? "Changes saved" : "Entry saved");
+    clearDraft(); resetForm(); showTab("history");
+  } catch(err){
+    $("#save").disabled = false;
+    $("#save-hint").textContent = err?.code==="quota_exceeded" ? "Storage is full. Delete some old entries to make room." : "Couldn't save (" + (err?.code||"error") + "). Try again.";
+  }
+});
+
+/* ---------- Check-in cards ---------- */
+function renderCheckins(){
+  const now = new Date(); const today = localDate(now); const mins = now.getHours()*60+now.getMinutes();
+  for(const slot of ["midday","evening"]){
+    const el = $("#ci-"+slot); const done = entries.filter(e=>e.date===today && e.slot===slot).sort((a,b)=>a.ts.localeCompare(b.ts))[0];
+    el.classList.remove("done","due");
+    const t = el.querySelector(".state > span");
+    if(done){ el.classList.add("done"); t.textContent = "Logged at " + fmtTime(done.ts); }
+    else if(mins >= minutesOf(times[slot])){ el.classList.add("due"); t.textContent = "Due now, tap to log"; }
+    else { t.textContent = "At " + times[slot]; }
+  }
+}
+document.querySelectorAll(".ci").forEach(b => b.addEventListener("click", () => { if(!form.id){ form.slot = b.dataset.slot; renderSlotSeg(); saveDraft(); } showTab("log"); }));
+
+/* ---------- History ---------- */
+function intensityDots(v){ return v ? `<span class="dots" aria-label="Intensity ${v} of 5, ${INTENSITY[v]}">${[1,2,3,4,5].map(i=>`<i class="${i<=v?"on":""}"></i>`).join("")}</span>` : ""; }
+function dayLabel(date){
+  const [y,m,d] = date.split("-").map(Number); const dt = new Date(y,m-1,d);
+  const today = localDate(new Date()); const yd = new Date(); yd.setDate(yd.getDate()-1);
+  const name = dt.toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
+  return date===today ? "Today · " + name : date===localDate(yd) ? "Yesterday · " + name : name;
+}
+function renderHistory(){
+  const el = $("#history");
+  if(entries.length===0){ el.innerHTML = `<div class="empty">No entries yet. Your first check-in will show up here.</div>`; return; }
+  const byDay = new Map();
+  for(const e of entries){ if(!byDay.has(e.date)) byDay.set(e.date, []); byDay.get(e.date).push(e); }
+  el.innerHTML = [...byDay.entries()].map(([date, list]) => `
+    <div class="day">
+      <div class="dayhead"><h3>${dayLabel(date)}</h3><span class="small muted">${list.length} ${list.length===1?"entry":"entries"}</span></div>
+      ${list.map(e => `
+        <article class="entry" data-id="${e.id}">
+          <div class="meta">
+            <div><span class="when">${fmtTime(e.ts)}</span> ${intensityDots(e.intensity)}</div>
+            <span class="pill">${SLOT_LABEL[e.slot]||e.slot}</span>
+          </div>
+          <div class="picked">${(e.emotions||[]).map(p => `<span class="tag" style="--c:var(--c-${p.key})"><i></i><span class="path">${esc(p.core)} ›</span><strong>${esc(p.specific||p.secondary)}</strong></span>`).join("")}</div>
+          ${e.situation ? `<div><div class="q">Situation</div><p>${esc(e.situation)}</p></div>` : ""}
+          ${e.why ? `<div><div class="q">Why</div><p>${esc(e.why)}</p></div>` : ""}
+          <div class="tools"><button data-act="edit">Edit</button><button data-act="delete">Delete</button></div>
+        </article>`).join("")}
+    </div>`).join("");
+  el.querySelectorAll("button[data-act]").forEach(b => b.addEventListener("click", async () => {
+    const id = b.closest(".entry").dataset.id; const e = entries.find(x=>x.id===id); if(!e) return;
+    if(b.dataset.act==="edit") loadForEdit(e);
+    else if(confirm("Delete this entry? This can't be undone.")){ try{ await store.remove(id); toast("Entry deleted"); }catch{ toast("Couldn't delete, try again"); } }
+  }));
+}
+
+/* ---------- Patterns ---------- */
+let rangeDays = 7;
+$("#range-seg").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; rangeDays=+b.dataset.days; $("#range-seg").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", String(x===b))); renderPatterns(); });
+function renderPatterns(){
+  const cutoff = new Date(); cutoff.setHours(0,0,0,0); cutoff.setDate(cutoff.getDate()-(rangeDays-1));
+  const from = localDate(cutoff);
+  const list = entries.filter(e => e.date >= from);
+  const coreCounts = Object.fromEntries(CORE_ORDER.map(k=>[k,0])); const names = new Map(); let intSum=0, intN=0;
+  for(const e of list){
+    const seen = new Set();
+    for(const p of (e.emotions||[])){ if(!seen.has(p.key)){ seen.add(p.key); coreCounts[p.key]=(coreCounts[p.key]||0)+1; } const n=p.specific||p.secondary; names.set(n,(names.get(n)||0)+1); }
+    if(e.intensity){ intSum+=e.intensity; intN++; }
+  }
+  const top = CORE_ORDER.reduce((a,b)=> coreCounts[b]>coreCounts[a]?b:a, CORE_ORDER[0]);
+  const topName = WHEEL.find(w=>w.key===top)?.core;
+  $("#stats").innerHTML = `
+    <div class="stat"><b>${list.length}</b><span>${list.length===1?"entry":"entries"}</span></div>
+    <div class="stat"><b>${intN? (intSum/intN).toFixed(1) : "–"}</b><span>avg intensity</span></div>
+    <div class="stat"><b style="font-size:20px;padding-top:4px">${list.length && coreCounts[top] ? topName : "–"}</b><span>most present</span></div>`;
+  const max = Math.max(1, ...Object.values(coreCounts));
+  $("#bars").innerHTML = CORE_ORDER.map(k => { const w = WHEEL.find(x=>x.key===k); const n=coreCounts[k];
+    return `<div class="bar" style="--c:var(--c-${k})" data-tip="${w.core}: ${n} of ${list.length} ${list.length===1?"entry":"entries"}"><span>${w.core}</span><div class="track"><div class="fill" style="width:${(n/max*100).toFixed(1)}%"></div></div><span class="n">${n}</span></div>`; }).join("");
+  const sorted = [...names.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8);
+  $("#toplist").innerHTML = sorted.length ? sorted.map(([n,c]) => `<div><span>${esc(n)}</span><span class="n">${c}×</span></div>`).join("") : `<div class="muted">Nothing in this range yet.</div>`;
+}
+const tip = $("#tip");
+document.addEventListener("mousemove", e => {
+  const bar = e.target.closest?.(".bar");
+  if(!bar){ tip.classList.remove("show"); return; }
+  tip.textContent = bar.dataset.tip; tip.style.left = e.pageX+"px"; tip.style.top = e.pageY+"px"; tip.classList.add("show");
+});
+
+/* ---------- Tabs, toast, boot ---------- */
+function showTab(name){
+  for(const t of ["log","history","patterns"]){ $("#tab-"+t).setAttribute("aria-selected", String(t===name)); $("#panel-"+t).hidden = t!==name; }
+  lsSet("wheel-checkin-tab", name);
+}
+document.querySelectorAll('[role="tab"]').forEach(b => b.addEventListener("click", () => showTab(b.id.replace("tab-",""))));
+let toastT; function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
+function renderAll(){ renderSlotSeg(); renderWheel(); renderChips(); renderPicked(); renderIntensity(); }
+
+$("#today-label").textContent = new Date().toLocaleDateString(undefined,{weekday:"long", month:"long", day:"numeric"});
+listeners.push(() => { renderCheckins(); renderHistory(); renderPatterns(); if(!form.id && form.picked.length===0 && !form.situation && !form.why) { form.slot = defaultSlot(); renderSlotSeg(); } });
+
+(function boot(){
+  const draft = lsGet(DRAFT_KEY, null);
+  if(draft && (draft.picked?.length || draft.situation || draft.why)){ Object.assign(form, {slot:draft.slot||"anytime", picked:draft.picked||[], intensity:draft.intensity||null, situation:draft.situation||"", why:draft.why||""}); $("#situation").value=form.situation; $("#why").value=form.why; }
+  else form.slot = defaultSlot();
+  renderAll(); renderCheckins(); renderHistory(); renderPatterns();
+  showTab(lsGet("wheel-checkin-tab","log"));
+  initStore();
+  setInterval(renderCheckins, 60000);
+})();
+</script>
