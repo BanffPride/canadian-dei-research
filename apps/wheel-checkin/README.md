@@ -1,8 +1,9 @@
 # Wheel Check-in
 
-A single-file emotion journal built as a Claude Artifact. It uses the Junto
-Institute Emotion & Feeling Wheel (six core emotions, each with secondary and
-specific feelings) and captures, per entry:
+A single-file emotion journal built as a Claude Artifact. It starts from the Junto
+Institute Emotion & Feeling Wheel and broadens it to ten core emotions (Anger,
+Disgust, Fear, Sadness, Drained, Surprise, Joy, Love, Calm, Confident), each
+with secondary and specific feelings, and captures, per entry:
 
 - one or more feelings picked from the wheel
 - an intensity rating from 1 (faint) to 5 (intense)

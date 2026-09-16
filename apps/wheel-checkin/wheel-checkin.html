@@ -6,7 +6,7 @@
   --bg:#F2F1F6; --surface:#FFFFFF; --soft:#E9E7F0; --ink:#1E1C2A; --muted:#6A677A; --line:#DDDBE5;
   --accent:#4E4380; --accent-ink:#FFFFFF; --focus:#7A6BC8;
   --good:#2F7A2C; --due:#B4581A;
-  --c-anger:#C4457F; --c-fear:#9E3A10; --c-love:#D9AE2E; --c-joy:#2F7A2C; --c-surprise:#1A8FAE; --c-sadness:#6A62D0;
+  --c-anger:#843B61; --c-disgust:#79720E; --c-fear:#CB7A5D; --c-sadness:#4147B4; --c-drained:#2584B2; --c-surprise:#3FBFCC; --c-joy:#29672E; --c-love:#B25D65; --c-calm:#29A895; --c-confident:#93640C;
   --shadow:0 1px 2px rgba(30,28,42,.06),0 6px 20px rgba(30,28,42,.06);
 }
 @media (prefers-color-scheme: dark){
@@ -15,7 +15,7 @@
     --bg:#16151C; --surface:#201F28; --soft:#2A2833; --ink:#ECEAF2; --muted:#A09DB0; --line:#363441;
     --accent:#B9ACF2; --accent-ink:#16151C; --focus:#C9BEF8;
     --good:#7CC46A; --due:#E59A5C;
-    --c-anger:#913968; --c-fear:#C05008; --c-love:#AB9017; --c-joy:#207029; --c-surprise:#33A3B4; --c-sadness:#6047B0;
+    --c-anger:#C4759C; --c-disgust:#9C963E; --c-fear:#BA5530; --c-sadness:#7F8CD5; --c-drained:#006F9C; --c-surprise:#13A5B2; --c-joy:#19B036; --c-love:#AE5A62; --c-calm:#29A895; --c-confident:#B9883C;
     --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
   }
 }
@@ -24,7 +24,7 @@
   --bg:#16151C; --surface:#201F28; --soft:#2A2833; --ink:#ECEAF2; --muted:#A09DB0; --line:#363441;
   --accent:#B9ACF2; --accent-ink:#16151C; --focus:#C9BEF8;
   --good:#7CC46A; --due:#E59A5C;
-  --c-anger:#913968; --c-fear:#C05008; --c-love:#AB9017; --c-joy:#207029; --c-surprise:#33A3B4; --c-sadness:#6047B0;
+  --c-anger:#C4759C; --c-disgust:#9C963E; --c-fear:#BA5530; --c-sadness:#7F8CD5; --c-drained:#006F9C; --c-surprise:#13A5B2; --c-joy:#19B036; --c-love:#AE5A62; --c-calm:#29A895; --c-confident:#B9883C;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
@@ -77,13 +77,13 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 .intensity button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 
 /* wheel */
-.wheelwrap{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:14px;align-items:start}
-@media (max-width:480px){.wheelwrap{grid-template-columns:1fr}.wheelwrap svg{max-width:240px;margin:0 auto}}
+.wheelwrap{display:grid;grid-template-columns:minmax(200px,260px) 1fr;gap:14px;align-items:start}
+@media (max-width:560px){.wheelwrap{grid-template-columns:1fr}.wheelwrap svg{max-width:300px;margin:0 auto}}
 .wheelwrap svg{width:100%;height:auto;display:block}
 .wedge{cursor:pointer;stroke:var(--surface);stroke-width:2;transition:opacity .15s}
 .wedge:hover{opacity:.85}
-.wedge-label{font-family:"Source Sans 3",system-ui,sans-serif;font-size:13px;font-weight:600;fill:var(--ink);pointer-events:none}
-.center-text{font-family:"Fraunces",Georgia,serif;font-size:12px;fill:var(--muted);text-anchor:middle}
+.wedge-label{font-family:"Source Sans 3",system-ui,sans-serif;font-size:12.5px;font-weight:600;fill:var(--ink);pointer-events:none}
+.center-text{font-family:"Fraunces",Georgia,serif;font-size:13px;fill:var(--muted);text-anchor:middle}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:15px}
 .chips button[aria-pressed="true"]{border-color:var(--ink);background:var(--soft);font-weight:600}
@@ -132,7 +132,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 .stat span{font-size:13px;color:var(--muted)}
 @media (max-width:420px){.stats{grid-template-columns:1fr 1fr}}
 .bars{display:flex;flex-direction:column;gap:8px}
-.bar{display:grid;grid-template-columns:88px 1fr 34px;align-items:center;gap:10px;font-size:15px;position:relative}
+.bar{display:grid;grid-template-columns:92px 1fr 34px;align-items:center;gap:10px;font-size:15px;position:relative}
 .bar .track{height:14px;background:var(--soft);border-radius:4px;overflow:hidden}
 .bar .fill{height:100%;background:var(--c);border-radius:0 4px 4px 0;min-width:0;transition:width .3s}
 .bar .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
@@ -185,7 +185,7 @@ textarea::placeholder{color:var(--muted);opacity:.8}
       <div class="field">
         <div class="label">What am I feeling?</div>
         <div class="wheelwrap">
-          <svg id="wheel" viewBox="0 0 240 240" role="group" aria-label="Core emotions"></svg>
+          <svg id="wheel" viewBox="0 0 300 300" role="group" aria-label="Core emotions"></svg>
           <div class="rows">
             <div id="row-secondary"><div class="rowlbl" id="lbl-secondary">Tap a colour on the wheel</div><div class="chips" id="chips-secondary"></div></div>
             <div id="row-specific" hidden><div class="rowlbl" id="lbl-specific">More specifically</div><div class="chips" id="chips-specific"></div></div>
@@ -263,26 +263,43 @@ textarea::placeholder{color:var(--muted);opacity:.8}
 /* ---------- The wheel (Junto Institute Emotion & Feeling Wheel) ---------- */
 const WHEEL = [
   { core:"Anger", key:"anger", secondary:[
-    ["Rage",["Hate","Hostile"]],["Exasperated",["Agitated","Frustrated"]],["Irritable",["Annoyed","Aggravated"]],
-    ["Envy",["Resentful","Jealous"]],["Disgust",["Contempt","Revolted"]]]},
+    ["Rage",["Hate","Hostile","Furious"]],["Exasperated",["Agitated","Frustrated"]],["Irritable",["Annoyed","Aggravated"]],
+    ["Envy",["Resentful","Jealous"]],["Bitter",["Indignant","Violated"]],["Critical",["Skeptical","Dismissive"]],
+    ["Let down",["Betrayed","Humiliated"]]]},
+  { core:"Disgust", key:"disgust", secondary:[
+    ["Disapproving",["Judgmental","Embarrassed"]],["Appalled",["Revolted","Horrified"]],["Awful",["Nauseated","Detestable"]],
+    ["Repelled",["Hesitant","Avoidant"]],["Contempt",["Scornful","Loathing"]]]},
+  { core:"Fear", key:"fear", secondary:[
+    ["Scared",["Frightened","Helpless"]],["Terror",["Panic","Hysterical"]],["Insecure",["Inferior","Inadequate"]],
+    ["Nervous",["Worried","Anxious"]],["Horror",["Mortified","Dread"]],["Threatened",["Exposed","Unsafe"]],
+    ["Overwhelmed",["Out of control","Frozen"]],["Rejected",["Excluded","Persecuted"]]]},
   { core:"Sadness", key:"sadness", secondary:[
-    ["Suffering",["Agony","Hurt"]],["Sadness",["Depressed","Sorrow"]],["Disappointed",["Dismayed","Displeased"]],
-    ["Shameful",["Regretful","Guilty"]],["Neglected",["Isolated","Lonely"]],["Despair",["Grief","Powerless"]]]},
+    ["Suffering",["Agony","Hurt"]],["Down",["Depressed","Sorrow"]],["Disappointed",["Dismayed","Displeased"]],
+    ["Shameful",["Regretful","Guilty"]],["Neglected",["Isolated","Lonely"]],["Despair",["Grief","Powerless"]],
+    ["Vulnerable",["Fragile","Victimized"]],["Abandoned",["Left out","Forgotten"]]]},
+  { core:"Drained", key:"drained", secondary:[
+    ["Tired",["Sleepy","Exhausted"]],["Bored",["Indifferent","Apathetic"]],["Stressed",["Pressured","Frazzled"]],
+    ["Busy",["Rushed","Scattered"]],["Numb",["Empty","Detached"]],["Unwell",["Achy","Off"]]]},
   { core:"Surprise", key:"surprise", secondary:[
     ["Stunned",["Shocked","Dismayed"]],["Confused",["Disillusioned","Perplexed"]],["Amazed",["Astonished","Awe-struck"]],
-    ["Overcome",["Speechless","Astounded"]],["Moved",["Stimulated","Touched"]]]},
+    ["Overcome",["Speechless","Astounded"]],["Moved",["Stimulated","Touched"]],["Startled",["Alarmed","Jolted"]]]},
   { core:"Joy", key:"joy", secondary:[
     ["Content",["Pleased","Satisfied"]],["Happy",["Amused","Delighted"]],["Cheerful",["Jovial","Blissful"]],
     ["Proud",["Triumphant","Illustrious"]],["Optimistic",["Eager","Hopeful"]],["Enthusiastic",["Excited","Zeal"]],
-    ["Elation",["Euphoric","Jubilation"]],["Enthralled",["Enchanted","Rapture"]]]},
+    ["Elation",["Euphoric","Jubilation"]],["Enthralled",["Enchanted","Rapture"]],["Playful",["Silly","Free"]],
+    ["Interested",["Curious","Inquisitive"]]]},
   { core:"Love", key:"love", secondary:[
     ["Affectionate",["Romantic","Fondness"]],["Longing",["Sentimental","Attracted"]],["Desire",["Passion","Infatuation"]],
-    ["Tenderness",["Caring","Compassionate"]],["Peaceful",["Relieved","Satisfied"]]]},
-  { core:"Fear", key:"fear", secondary:[
-    ["Scared",["Frightened","Helpless"]],["Terror",["Panic","Hysterical"]],["Insecure",["Inferior","Inadequate"]],
-    ["Nervous",["Worried","Anxious"]],["Horror",["Mortified","Dread"]]]},
+    ["Tenderness",["Caring","Compassionate"]],["Grateful",["Thankful","Appreciative"]],["Connected",["Accepted","Belonging"]]]},
+  { core:"Calm", key:"calm", secondary:[
+    ["Peaceful",["Relieved","Serene"]],["Relaxed",["At ease","Unhurried"]],["Grounded",["Centred","Steady"]],
+    ["Thoughtful",["Reflective","Pensive"]],["Secure",["Safe","Trusting"]],["Accepting",["Open","Patient"]]]},
+  { core:"Confident", key:"confident", secondary:[
+    ["Self-assured",["Bold","Certain"]],["Powerful",["Capable","Strong"]],["Courageous",["Brave","Daring"]],
+    ["Respected",["Valued","Worthy"]],["Creative",["Inspired","Imaginative"]],["Determined",["Focused","Driven"]],
+    ["Free",["Liberated","Independent"]]]},
 ];
-const CORE_ORDER = ["anger","fear","love","joy","surprise","sadness"]; // fixed chart order
+const CORE_ORDER = WHEEL.map(w=>w.key); // fixed chart order = wheel order
 const INTENSITY = {1:"Faint",2:"Mild",3:"Moderate",4:"Strong",5:"Intense"};
 const SLOT_LABEL = {midday:"Midday", evening:"Evening", anytime:"Anytime"};
 const $ = s => document.querySelector(s);
@@ -362,18 +379,20 @@ function wedgePath(cx,cy,r1,r2,a0,a1){
   return `M${x0},${y0}A${r2},${r2},0,0,1,${x1},${y1}L${x2},${y2}A${r1},${r1},0,0,0,${x3},${y3}Z`;
 }
 function renderWheel(){
-  const svg = $("#wheel"); const n = WHEEL.length; let html = "";
+  const svg = $("#wheel"); const n = WHEEL.length, step = 360/n, R = 150, r2 = 144, r1 = 64, rl = 106; let html = "";
   WHEEL.forEach((w,i) => {
-    const a0 = -30 + i*60, a1 = a0+60, mid = a0+30;
+    const a0 = -step/2 + i*step, a1 = a0+step, mid = a0+step/2;
     const sel = form.core===w.key;
     const fill = sel ? `color-mix(in oklab, var(--c-${w.key}) 62%, var(--surface))` : `color-mix(in oklab, var(--c-${w.key}) 26%, var(--surface))`;
-    const [lx,ly] = polar(120,120,84,mid);
-    html += `<path class="wedge" d="${wedgePath(120,120,50,114,a0,a1)}" fill="${fill}" data-core="${w.key}" role="button" tabindex="0" aria-pressed="${sel}" aria-label="${w.core}"><title>${w.core}</title></path>`;
-    html += `<text class="wedge-label" x="${lx}" y="${ly+4}" text-anchor="middle">${w.core}</text>`;
+    const [lx,ly] = polar(R,R,rl,mid);
+    // rotate labels to follow the ring so ten of them fit; keep them upright
+    let rot = mid; if(rot>90 && rot<270) rot -= 180;
+    html += `<path class="wedge" d="${wedgePath(R,R,r1,r2,a0,a1)}" fill="${fill}" data-core="${w.key}" role="button" tabindex="0" aria-pressed="${sel}" aria-label="${w.core}"><title>${w.core}</title></path>`;
+    html += `<text class="wedge-label" x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${rot} ${lx} ${ly})">${w.core}</text>`;
   });
   const c = WHEEL.find(w=>w.key===form.core);
-  html += `<circle cx="120" cy="120" r="46" fill="var(--surface)"/>`;
-  html += `<text class="center-text" x="120" y="${c?116:117}">${c? "Feeling" : "Tap a"}</text><text class="center-text" x="120" y="${c?132:133}" style="fill:var(--ink);font-weight:600;font-size:${c?14:12}px">${c? c.core.toLowerCase() : "colour"}</text>`;
+  html += `<circle cx="${R}" cy="${R}" r="${r1-4}" fill="var(--surface)"/>`;
+  html += `<text class="center-text" x="${R}" y="${R-6}">${c? "Feeling" : "Tap a"}</text><text class="center-text" x="${R}" y="${R+12}" style="fill:var(--ink);font-weight:600;font-size:${c?15:13}px">${c? c.core.toLowerCase() : "colour"}</text>`;
   svg.innerHTML = html;
   svg.querySelectorAll(".wedge").forEach(p => {
     const pick = () => { form.core = p.dataset.core; form.secondary = null; renderWheel(); renderChips(); };
